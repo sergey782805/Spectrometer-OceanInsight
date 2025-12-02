@@ -14,10 +14,8 @@ int main(int argc, char *argv[])
 
     Spectr window;
 
-
-    //GraphModel model;
     
-    //qmlRegisterType<GraphModel>("CustomTypes", 1, 0, "model");
+    
 
     //QQuickWidget::setInitialProperties()
 

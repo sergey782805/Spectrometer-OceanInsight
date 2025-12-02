@@ -8,13 +8,14 @@ class GraphModel : public QObject
 {
 
 	Q_OBJECT
-		Q_PROPERTY(double getMaxX READ getMaxX WRITE setMaxX NOTIFY maxXChanged)
-		Q_PROPERTY(double getMaxY READ getMaxY WRITE setMaxY NOTIFY maxYChanged)
-		Q_PROPERTY(QList<QPointF> qList READ qList)
+	Q_PROPERTY(double getMaxX READ getMaxX WRITE setMaxX NOTIFY maxXChanged)
+	Q_PROPERTY(double getMaxY READ getMaxY WRITE setMaxY NOTIFY maxYChanged)
+	Q_PROPERTY(QList<QPointF> qList READ qList)
 
 		//QML_ELEMENT
 public:
 	GraphModel();
+	~GraphModel();
 
 	double getMaxX()
 	{

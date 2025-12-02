@@ -39,8 +39,8 @@ GraphsView {
 
     axisY: ValueAxis 
     {
-        min: -5
-        max: myModel.getMaxY // from module
+        min: -1
+        max: 1 //myModel.getMaxY // from module
         tickInterval: 10
         labelDecimals: -1
         titleText: "Intensity"

@@ -21,15 +21,11 @@ public:
     Spectr(QWidget *parent = nullptr);
     ~Spectr();
 
-public slots:
-
-    void on_update_button_cliced();
-    void execFromModel();
-
+    
 private:
     Ui::SpectrClass ui;
     
-    GraphModel model;
+    GraphModel* m_model;
     //GraphModel which will be passed to qml?
 
     int showModel();
