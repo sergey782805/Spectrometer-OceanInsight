@@ -1,61 +1,54 @@
 #include "spectr.h"
-#include "GraphModel.h"
+
+
 Spectr::Spectr(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent), m_model {nullptr}, m_spectrometr {nullptr}
 {
     ui.setupUi(this);
 
-    m_model = new GraphModel;
 
-    //ui.quickWidget->setInitialProperties({ {"model", QVariant::fromValue(&model)} });
+    m_model = new GraphModel();
+    m_spectrometr = new Spectrometr();
 
+    ui.quickWidget->engine()->rootContext()->setContextProperty("myModel", m_model);
+  
+    ui.quickWidget->setSource(QUrl::fromLocalFile("Graph.qml"));
 
-    //ui.quickWidget->setSource(QUrl::fromLocalFile("Graph.qml"));
-
-
-    //QObject::connect(ui.pushButton, &QPushButton::clicked, this, &Spectr::on_update_button_cliced);
-    //QObject::connect(&model, &GraphModel::maxXChanged, this, &Spectr::execFromModel); //TESTING
-    //QObject::connect(ui.pushButton, &QPushButton::clicked, &model, &GraphModel::setMaxX);
-    
-
-
-
-
-    showModel();
-
-
+    QObject::connect(ui.pushButton, &QPushButton::clicked, this, &Spectr::updateGraph);
+    QObject::connect(ui.averageValue, &QSpinBox::valueChanged, this, &Spectr::changeAverage);
+    QObject::connect(ui.integrationTimeValue, &QSpinBox::valueChanged, this, &Spectr::changeIntegrationTime);
 
     resize(800, 600);
+}
+Spectr::~Spectr()
+{
+    delete m_spectrometr;
+    m_spectrometr = nullptr;
+    delete m_model;
+    m_model = nullptr;
+}
 
+void Spectr::updateGraph()
+{
+
+
+    //m_spectrometr->setAverageFactor(10); // value from UI element!
+    //m_spectrometr->setIngertationTime(800000); // value from UI element!
+
+    QList<QPointF> data{QPointF(1, 0.1) , QPointF(2, 0.3), QPointF(3, 0.6)};
+    
+    m_model->setData(data);
     
 }
 
-
-
-int Spectr::showModel()
+void Spectr::changeAverage()
 {
-    if (!m_model->isReady())
-    {
-        ui.textBrowser->append("INIT failed!: " + QString::number(m_model->isReady()));
-        return -1;
-    }
-    ui.textBrowser->append("-----INTIT STARTING-----");
-    ui.textBrowser->append("Device count: " + QString::number(m_model->getdeviceCount()));
-    if (m_model->getdeviceCount() < 0)
-    {
-        return -1;
-    }  
-    ui.textBrowser->append("Device Id Count: " + QString::number(m_model->getDeviceIdCount()));
-    ui.textBrowser->append("Device name: " + m_model->getDeviceName());
-    ui.textBrowser->append("Pixel count: " + QString::number(m_model->getPixelCount()));
-    ui.textBrowser->append("-----INTIT END-----");
-
-    return 0;
+    m_spectrometr->setAverageFactor(ui.averageValue->value());
+    ui.textBrowser->append("Average values now is : " + QString::number(ui.averageValue->value()));
 }
-
-Spectr::~Spectr()
+void Spectr::changeIntegrationTime()
 {
-    delete m_model;
-    m_model = nullptr;
+    m_spectrometr->setIngertationTime(ui.integrationTimeValue->value());
+    ui.textBrowser->append("Integration time now is: " + QString::number(ui.integrationTimeValue->value()));
 }
 

@@ -1,14 +1,15 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
-//#include <QQmlEngine>
 #include <QQuickWidget>
 #include <QtGraphs/qsplineseries.h>
-
 #include "GraphModel.h"
+#include "Spectrometr.h"
+#include <QtQml/qqmlengine.h>
+#include <qqmlcontext.h>
+
 #include <qqml.h>
-#include <vector>
-#include <memory>
+
 
 
 #include "ui_Spectr.h"
@@ -26,9 +27,10 @@ private:
     Ui::SpectrClass ui;
     
     GraphModel* m_model;
-    //GraphModel which will be passed to qml?
-
-    int showModel();
-
+    Spectrometr* m_spectrometr;
+    
+    void updateGraph();
+    void changeAverage();
+    void changeIntegrationTime();
 };
 

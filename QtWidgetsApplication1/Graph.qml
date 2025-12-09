@@ -1,25 +1,34 @@
 // LineGraph.qml
 import QtGraphs
 import QtQuick
-import QtQuick.Controls
-import CustomTypes 1.0
 
  
 GraphsView {
     
-    id: graphsID
+   
+    
+    Connections{ // NOT NEEDET AT ALL
+        target: myModel
+        
+        function onDataChanged ()
+        {
+            series.clear()
+            console.log("CLICKED!")
+            axisX.max = myModel.getMaxX
+            console.log("X AFTER CLICK IS " + myModel.getMaxX)
+            var data = myModel.getData
 
-    //property GraphModel myModel: GraphModel {}
+            for(var i = 0; i < data.length; i++){
+                series.append(data[i]) // Try to change type qList to QVariantList
+            }
 
-    GraphModel 
-    {
-        id: myModel
+        }
+
     }
-
 
     anchors.fill: parent
     anchors.margins: 0
-
+    
     theme: GraphsTheme 
     {
         colorScheme: GraphsTheme.ColorScheme.Dark
@@ -29,9 +38,9 @@ GraphsView {
     axisX: ValueAxis 
     {
         id: axisX
-        min: 100.0
+        min: 0
         max: myModel.getMaxX //from Module
-        tickInterval: 100
+        tickInterval: 5
         labelDecimals: -1
         titleText: "nm"
         
@@ -46,31 +55,34 @@ GraphsView {
         titleText: "Intensity"
     }
 
+    
 
     //from module 
     SplineSeries 
     {
-
+        
+        
         id: series
+        //XYPoint { x: 0; y: 0.1 }
+        //XYPoint { x: 1; y: 0.5 }
         
-        
-        //XYPoint { x: 0; y: 5 }
-        //XYPoint { x: 1; y: 2 }
-        
-        //mySeries.append(
     }
     
     
      Component.onCompleted: {
-        series.clear()
         
-        var data = myModel.qList       
-        //var maxY = myModel. 
+        //console.log("COMPLITED!")
+        //console.log("MAX AXIS X: " + axisX.max)
+        //console.log("CONNECTION: " + myCon)
+        //series.clear()
         
-         for (var i = 0; i < data.length; i++) 
-            {
-	            series.append(data[i])
-            }
+        //var data = myModel.qList       
+        
+        
+         //for (var i = 0; i < data.length; i++) 
+           // {
+	         //   series.append(data[i])
+            //}
 
         //series.append(data)
         
@@ -80,23 +92,8 @@ GraphsView {
  
     //series.remo
   
-
-
-    Connections
-    {
-        target: myModel
-        function onMaxXChanged() {
-        
-            axisX.titleText = "Changed"    
-            
-        
-        }
-        
-
-    }
    
 
-    
-
+ 
     
 }

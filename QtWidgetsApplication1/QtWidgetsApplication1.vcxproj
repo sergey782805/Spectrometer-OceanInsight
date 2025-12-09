@@ -37,11 +37,15 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>6.10.0_msvc2022_64</QtInstall>
-    <QtModules>core;gui;qml;quick;quickcontrols2;widgets;quickwidgets</QtModules>
+    <QtModules>core;gui;qml;quick;widgets;quickwidgets;graphs</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
     <QtHeaderSearchPath>C:\Program Files\Ocean Optics\OceanDirect SDK\include</QtHeaderSearchPath>
-    <QtLibrarySearchPath>C:\Qt\6.10.0\msvc2022_64\lib;$(QtLibrarySearchPath)</QtLibrarySearchPath>
+    <QtLibrarySearchPath>C:\Qt\6.10.0\msvc2022_64\lib</QtLibrarySearchPath>
     <QtPlugin>true</QtPlugin>
+    <QMakeExtraArgs>
+    </QMakeExtraArgs>
+    <QMakeCodeLines>CONFIG += qmltypes;QML_IMPORT_NAME = CustomTypess;QML_IMPORT_MAJOR_VERSION = 1</QMakeCodeLines>
+    <QtQMLDebugEnable>false</QtQMLDebugEnable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>6.10.0_msvc2022_64</QtInstall>
@@ -63,14 +67,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>
-    </IncludePath>
+    <IncludePath>C:\Qt\6.10.0\msvc2022_64\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalDependencies>C:\Program Files\Ocean Optics\OceanDirect SDK\lib\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>C:\Program Files\Ocean Optics\OceanDirect SDK\lib\*.lib;C:\Qt\6.10.0\msvc2022_64\lib\Qt6Graphs.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -102,6 +105,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Spectrometr.cpp" />
     <QtRcc Include="Spectr.qrc" />
     <QtUic Include="Spectr.ui" />
     <QtMoc Include="Spectr.h" />
@@ -117,6 +121,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Spectrometr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
