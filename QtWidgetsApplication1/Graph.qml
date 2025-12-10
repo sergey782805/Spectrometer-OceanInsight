@@ -5,21 +5,21 @@ import QtQuick
  
 GraphsView {
     
-   
-    
     Connections{ // NOT NEEDET AT ALL
         target: myModel
         
         function onDataChanged ()
         {
             series.clear()
+
             console.log("CLICKED!")
-            axisX.max = myModel.getMaxX
             console.log("X AFTER CLICK IS " + myModel.getMaxX)
             var data = myModel.getData
-
+            console.log("Data size in qml is " + data.length + "\n First point is " + data[0])
+            console.log("second point is " + data[1])
+            //series.append(data)
             for(var i = 0; i < data.length; i++){
-                series.append(data[i]) // Try to change type qList to QVariantList
+                series.append(data[i])
             }
 
         }
@@ -38,9 +38,9 @@ GraphsView {
     axisX: ValueAxis 
     {
         id: axisX
-        min: 0
-        max: myModel.getMaxX //from Module
-        tickInterval: 5
+        min: 0.0
+        max: 1100.0//myModel.getMaxX //from Module
+        tickInterval: 50.0
         labelDecimals: -1
         titleText: "nm"
         
@@ -48,20 +48,17 @@ GraphsView {
 
     axisY: ValueAxis 
     {
-        min: -1
-        max: 1 //myModel.getMaxY // from module
-        tickInterval: 10
+        min: 0.0
+        max: 1.0 //myModel.getMaxY // from module
+        tickInterval: 0.5
         labelDecimals: -1
         titleText: "Intensity"
     }
 
-    
-
     //from module 
     SplineSeries 
     {
-        
-        
+       
         id: series
         //XYPoint { x: 0; y: 0.1 }
         //XYPoint { x: 1; y: 0.5 }

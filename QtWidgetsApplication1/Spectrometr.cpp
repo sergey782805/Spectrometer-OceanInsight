@@ -1,9 +1,9 @@
 #include "Spectrometr.h"
 
-Spectrometr::Spectrometr()
+Spectrometr::Spectrometr(): m_averageFactor {1}, m_integrationTimeMicroseconds{ 400000 }
 {
 	init(); // searching spectrometr during RUNTIME
-
+	
 }
 Spectrometr::~Spectrometr()
 {
@@ -36,10 +36,16 @@ const bool Spectrometr::isReady()
 {
 	return m_init;
 }
-
+QList<QPointF> Spectrometr::getNewSpectrum()
+{
+	readWaveLengths();
+	readSpectrum();
+	vectorToQlist();
+	return m_convertedSeries;
+}
 // SET FUNCTIONS PUBLIC
 
-void Spectrometr::setIngertationTime(unsigned long ms)
+void Spectrometr::setIntegrationTime(unsigned long ms)
 {
 	if (isReady())
 	{
@@ -48,7 +54,6 @@ void Spectrometr::setIngertationTime(unsigned long ms)
 }
 void Spectrometr::setAverageFactor(unsigned int average)
 {
-	
 	m_averageFactor = average;
 }
 
@@ -116,7 +121,7 @@ void Spectrometr::vectorToQlist()
 	//Y are normalized to 1
 	for (int i{ 0 }; i < m_pixelCount; ++i)
 	{
-		if (m_spectrum.at(i) < m_maxIntensity && m_maxIntensity > 0)
+		if (m_spectrum.at(i) <= m_maxIntensity && m_maxIntensity > 0)
 		{
 			m_spectrum.at(i) /= m_maxIntensity;
 		}

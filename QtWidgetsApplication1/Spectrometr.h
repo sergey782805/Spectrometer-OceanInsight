@@ -18,13 +18,12 @@ public:
 	const char getDeviceName(); // not returning proper value!
 	const int getPixelCount();
 	const bool isReady();
+	QList<QPointF> getNewSpectrum();
 
-	void setIngertationTime(unsigned long ms);
+	void setIntegrationTime(unsigned long ms);
 	void setAverageFactor(unsigned int average);
 	
 private:
-
-
 	int m_errorCode;
 	int m_deviceCount;
 	int m_deviceIdCount;

@@ -6,7 +6,6 @@ Spectr::Spectr(QWidget *parent)
 {
     ui.setupUi(this);
 
-
     m_model = new GraphModel();
     m_spectrometr = new Spectrometr();
 
@@ -31,12 +30,14 @@ Spectr::~Spectr()
 void Spectr::updateGraph()
 {
 
-
+    //maybe update average and int
     //m_spectrometr->setAverageFactor(10); // value from UI element!
     //m_spectrometr->setIngertationTime(800000); // value from UI element!
 
-    QList<QPointF> data{QPointF(1, 0.1) , QPointF(2, 0.3), QPointF(3, 0.6)};
+    QList<QPointF> data{ QPointF(1.1, -0.1) , QPointF(2.11, 0.3), QPointF(3.99, 0.6), QPointF(5, 0.2), QPointF(6, 0.9) };
     
+    //data.clear();
+    data = m_spectrometr->getNewSpectrum(); // uncomment to read from spectometr
     m_model->setData(data);
     
 }
@@ -48,7 +49,7 @@ void Spectr::changeAverage()
 }
 void Spectr::changeIntegrationTime()
 {
-    m_spectrometr->setIngertationTime(ui.integrationTimeValue->value());
+    m_spectrometr->setIntegrationTime(ui.integrationTimeValue->value());
     ui.textBrowser->append("Integration time now is: " + QString::number(ui.integrationTimeValue->value()));
 }
 
