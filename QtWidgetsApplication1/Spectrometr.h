@@ -4,6 +4,7 @@
 #include <qpoint.h>
 #include <vector>
 #include <memory>
+#include <math.h>
 class Spectrometr : QObject
 {
 
@@ -20,8 +21,10 @@ public:
 	const bool isReady();
 	QList<QPointF> getNewSpectrum();
 
-	void setIntegrationTime(unsigned long ms);
-	void setAverageFactor(unsigned int average);
+	const double PPFD(const bool extendedPAR = 1); // recalculate! WRONG
+
+	void setIntegrationTime(const unsigned long ms); // ??
+	void setAverageFactor(const unsigned int average); //?
 	
 private:
 	int m_errorCode;
@@ -41,14 +44,16 @@ private:
 	std::vector<double> m_spectrum;
 	int m_intensityCount;
 
-	unsigned long m_integrationTimeMicroseconds;
+	unsigned long m_integrationTimeMicroseconds; // ??
 	double m_maxIntensity;
+
 
 	QList<QPointF> m_convertedSeries;
 	// Functions
 	int init();
 	void readWaveLengths();
 	void readSpectrum();
-	void vectorToQlist();
+	void vectorToQlist(); // FIX 1. rewriting m_spectrum before PPFD calculation 2. Filter for negative values
+				
 };
 

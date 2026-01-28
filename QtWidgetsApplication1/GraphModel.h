@@ -5,6 +5,7 @@
 #include <qpoint.h>
 #include <String>
 #include <QtQmlIntegration/qqmlintegration.h>
+
 class GraphModel : public QObject
 {
 
@@ -49,8 +50,10 @@ private:
 	double m_maxX;
 	double m_maxY;
 	
+	// Try QList<QVariant>
 	QList<QPointF> m_series;
-
+	
+	
 	//spectrometr parameters
 	
 	

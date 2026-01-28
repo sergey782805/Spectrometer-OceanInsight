@@ -7,19 +7,13 @@ GraphModel::GraphModel() : m_maxX {5.0}, m_maxY{1.0}
 {
 
 	//init();
+	
 
-	//setIngertationTime(800000); //2
-
-	//readWaveLengths();
-	//readSpectrum();
-
-	//vectorToQlist();
+	
 
 }
 GraphModel::~GraphModel()
 {
-	
-	
 }
 void GraphModel::setMaxX(double x)
 {

@@ -31,14 +31,16 @@ void Spectr::updateGraph()
 {
 
     //maybe update average and int
-    //m_spectrometr->setAverageFactor(10); // value from UI element!
-    //m_spectrometr->setIngertationTime(800000); // value from UI element!
+    //m_spectrometr->setAverageFactor(ui.averageValue->value()); // value from UI element!
+    //m_spectrometr->setIntegrationTime(ui.integrationTimeValue->value()); // value from UI element!
 
-    QList<QPointF> data{ QPointF(1.1, -0.1) , QPointF(2.11, 0.3), QPointF(3.99, 0.6), QPointF(5, 0.2), QPointF(6, 0.9) };
+    QList<QPointF> data{ QPointF(200.0, 0.1) , QPointF(300.0, 0.3), QPointF(400.0, 0.6), QPointF(500, 0.4), QPointF(600, 0.9) };
     
     //data.clear();
-    data = m_spectrometr->getNewSpectrum(); // uncomment to read from spectometr
+    //data = m_spectrometr->getNewSpectrum(); // uncomment to read from spectometr
     m_model->setData(data);
+    ui.PPFD->setValue(m_spectrometr->PPFD());
+    ui.textBrowser->append(QString::number(m_spectrometr->PPFD()));
     
 }
 
