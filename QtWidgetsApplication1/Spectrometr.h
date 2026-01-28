@@ -18,10 +18,12 @@ public:
 	const int getDeviceIdCount();
 	const char getDeviceName(); // not returning proper value!
 	const int getPixelCount();
-	const bool isReady();
-	QList<QPointF> getNewSpectrum();
 
-	const double PPFD(const bool extendedPAR = 1); // recalculate! WRONG
+	const bool isReady();
+	std::vector<double> readWaveLengths();
+	std::vector<double> readSpectrum();
+
+	std::size_t getIndexOfWavelenght(double wavelength);
 
 	void setIntegrationTime(const unsigned long ms); // ??
 	void setAverageFactor(const unsigned int average); //?
@@ -47,13 +49,11 @@ private:
 	unsigned long m_integrationTimeMicroseconds; // ??
 	double m_maxIntensity;
 
-
-	QList<QPointF> m_convertedSeries;
 	// Functions
 	int init();
-	void readWaveLengths();
-	void readSpectrum();
-	void vectorToQlist(); // FIX 1. rewriting m_spectrum before PPFD calculation 2. Filter for negative values
+	
+	
+	
 				
 };
 

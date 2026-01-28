@@ -46,6 +46,9 @@
     <ClCompile Include="Spectrometr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SpectrumProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Graph.qml">
@@ -62,5 +65,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SpectrumProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

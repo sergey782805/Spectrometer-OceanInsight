@@ -106,6 +106,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Spectrometr.cpp" />
+    <ClCompile Include="SpectrumProcessor.cpp" />
     <QtRcc Include="Spectr.qrc" />
     <QtUic Include="Spectr.ui" />
     <QtMoc Include="Spectr.h" />
@@ -124,6 +125,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Spectrometr.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SpectrumProcessor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
