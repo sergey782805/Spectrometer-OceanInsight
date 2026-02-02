@@ -16,12 +16,13 @@ GraphsView {
             console.log("X AFTER CLICK IS " + myModel.getMaxX)
             
             var data = myModel.getData
-            console.log("Data size in qml is " + data.length + "\n First point is " + data[0])
-            console.log("second point is " + data[1])
-            //series.append(myModel.getData)
-            for(var i = 0; i < data.length; i++){
-                series.append(data[i])
-            }
+            //console.log("Data size in qml is " + data.length + "\n First point is " + data[0])
+            //console.log("second point is " + data[1])
+            //series.append(data)
+            series.replace(data)
+            //for(var i = 0; i < data.length; i++){
+              //  series.append(data[i])
+            //}
 
         }
 

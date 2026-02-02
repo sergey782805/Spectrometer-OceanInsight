@@ -33,27 +33,28 @@ Spectr::~Spectr()
 void Spectr::updateGraph()
 {
 
-    //maybe update average and int
-    //m_spectrometr->setAverageFactor(ui.averageValue->value()); // value from UI element!
-    //m_spectrometr->setIntegrationTime(ui.integrationTimeValue->value()); // value from UI element!
 
-    QList<QPointF> data{ QPointF(200.0, 0.1) , QPointF(300.0, 0.3), QPointF(400.0, 0.6), QPointF(500, 0.4), QPointF(600, 0.9) };
-    data.clear();
-    //data.clear();
+    QList<QPointF> data;
     std::vector<double> wavelenghts = m_spectrometr->readWaveLengths();
     std::vector<double> spectrum = m_spectrometr->readSpectrum();
 
-    wavelenghts = { 200.0, 300.0, 400.0, 500.0, 600.0 };
-    spectrum = { 0.1, 0.3, 0.6, 0.4, 0.9 };
+    //std::vector<double> spectrumRelative = m_spectrumProcessor->toRelative(spectrum);
 
-    std::size_t lo = m_spectrometr->getIndexOfWavelenght(350);
-    std::size_t hi = m_spectrometr->getIndexOfWavelenght(800);
+
+    wavelenghts = { 400, 500, 600, 650, 700, 750, 800, 850, 900, 950, 1000 };
+    spectrum = { 0.1, 0.3, 0.6, 0.1, 0.9, 0.8, 2.5, 0.2, 0.25, 0.5, 0.05 };
+
+    std::size_t lo = m_spectrometr->getIndexOfWavelenght(350.0);
+    std::size_t hi = m_spectrometr->getIndexOfWavelenght(800.0);
+
+    lo = { 0 };
+    hi = { 10 };
 
     double PPFD = m_spectrumProcessor->PPFD(wavelenghts, spectrum, lo, hi);
 
-    //std::vector<double> relativeSpectrum = m_spectrumProcessor->toRelative(spectrum);
+    std::vector<double> relativeSpectrum = m_spectrumProcessor->toRelative(spectrum);
 
-    data = m_spectrumProcessor->toQList(wavelenghts, spectrum);
+    data = m_spectrumProcessor->toQList(wavelenghts, relativeSpectrum);
     //data = m_spectrometr->getNewSpectrum(); // uncomment to read from spectometr
     m_model->setData(data);
     ui.PPFD->setValue(PPFD);
