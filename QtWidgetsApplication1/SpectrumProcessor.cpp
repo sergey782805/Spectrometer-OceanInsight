@@ -1,6 +1,7 @@
 #include "SpectrumProcessor.h"
 
-SpectrumProcessor::SpectrumProcessor()
+SpectrumProcessor::SpectrumProcessor():
+	m_wavelengths{0}, m_spectrum{0}
 {
 
 }
@@ -31,38 +32,26 @@ QList<QPointF> SpectrumProcessor::toQList(const std::vector<double>& wavelengths
 
 std::vector<double> SpectrumProcessor::toRelative(const std::vector<double> spectrum)
 {
-	
 	std::vector<double> relativeSpectrum;
 	// pass spectrum by reference cause dereference invalid iterator error with *std::max_elemet
 	// pass spectrum by value for now.
 	double max = *std::max_element(spectrum.begin(), spectrum.end());
-	/*for (std::size_t i{ 0 }; i < spectrum.size(); ++i)
-	{
-		if (spectrum.at(i) <= max && max > 0)
-		{
-			relativeSpectrum.push_back(spectrum.at(i) / max);
-			
-		}
-	}*/
-
 	for (const auto& i : spectrum)
 	{
 		if (i <= max && max > 0.0)
 			relativeSpectrum.push_back(i / max);
 	}
-	
-
 	return relativeSpectrum;
 }
-
 double SpectrumProcessor::PPFD(const std::vector<double>& wavelengths, const std::vector<double>& spectrum, std::size_t lo, std::size_t hi)
 {
 
 	if (wavelengths.size() != spectrum.size()
 		|| lo >= wavelengths.size() - 1
 		|| lo > hi)
+	{
 		return 0;
-
+	}
 	const double h = 6.62607015e-34;
 	const double c = 3e8;
 	const double Na = 6.022e23;

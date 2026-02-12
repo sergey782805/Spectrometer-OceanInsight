@@ -12,8 +12,8 @@ GraphsView {
         {
             series.clear()
 
-            console.log("CLICKED!")
-            console.log("X AFTER CLICK IS " + myModel.getMaxX)
+            //console.log("CLICKED!")
+            //console.log("X AFTER CLICK IS " + myModel.getMaxX)
             
             var data = myModel.getData
             //console.log("Data size in qml is " + data.length + "\n First point is " + data[0])

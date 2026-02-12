@@ -30,8 +30,11 @@ private:
     GraphModel* m_model;
     Spectrometr* m_spectrometr;
     SpectrumProcessor* m_spectrumProcessor;
-    
+    //This function is DEPRECATED, should be deleted
+
     void updateGraph();
+    void readDark();
+    void readCorrectedSpectrum();
     void changeAverage();
     void changeIntegrationTime();
 };

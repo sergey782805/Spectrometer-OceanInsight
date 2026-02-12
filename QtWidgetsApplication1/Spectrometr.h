@@ -7,7 +7,6 @@
 #include <math.h>
 class Spectrometr : QObject
 {
-
 	Q_OBJECT
 
 public:
@@ -22,6 +21,8 @@ public:
 	const bool isReady();
 	std::vector<double> readWaveLengths();
 	std::vector<double> readSpectrum();
+	std::vector<double> readDarkSpectrum();
+	std::vector<double> readCorrectedSpectrum();
 
 	std::size_t getIndexOfWavelenght(double wavelength);
 
@@ -43,11 +44,13 @@ private:
 	
 	std::vector<double> m_wavelengths;
 	int m_wavelengthCount;
-	std::vector<double> m_spectrum;
+	std::vector<double> m_spectrum; // not used?
 	int m_intensityCount;
+	std::vector<double> m_darkSpectrum;
+
 
 	unsigned long m_integrationTimeMicroseconds; // ??
-	double m_maxIntensity;
+	double m_maxIntensity; // not used
 
 	// Functions
 	int init();

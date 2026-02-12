@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>779</width>
+    <width>812</width>
     <height>641</height>
    </rect>
   </property>
@@ -82,14 +82,28 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QPushButton" name="pushButton">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-          </font>
+        <widget class="QPushButton" name="readDark_button">
+         <property name="text">
+          <string>Считать темный спектр</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="readCorrectedSpectrum_button">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="toolTipDuration">
+          <number>-1</number>
+         </property>
+         <property name="statusTip">
+          <string extracomment="TEST"/>
+         </property>
+         <property name="whatsThis">
+          <string extracomment="TEST"/>
          </property>
          <property name="text">
-          <string>Обновить график</string>
+          <string>Считать спектр</string>
          </property>
         </widget>
        </item>
@@ -247,7 +261,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>779</width>
+     <width>812</width>
      <height>21</height>
     </rect>
    </property>
