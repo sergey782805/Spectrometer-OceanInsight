@@ -19,6 +19,7 @@ Spectr::Spectr(QWidget *parent)
     QObject::connect(ui.integrationTimeValue, &QSpinBox::valueChanged, this, &Spectr::changeIntegrationTime);
     QObject::connect(ui.readDark_button, &QPushButton::clicked, this, &Spectr::readDark);
     QObject::connect(ui.readCorrectedSpectrum_button, &QPushButton::clicked, this, &Spectr::readCorrectedSpectrum);
+    QObject::connect(ui.actionSave_As, &QAction::triggered, this, &Spectr::saveAs);
     resize(800, 600);
 }
 Spectr::~Spectr()
@@ -94,3 +95,41 @@ void Spectr::changeIntegrationTime()
     //ui.textBrowser->append("Integration time now is: " + QString::number(ui.integrationTimeValue->value()));
 }
 
+void Spectr::saveAs()
+{
+    QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        tr("Save spectrum"), 
+        desktopPath + "/Spectrum1.csv", 
+        tr("Text files (*.txt, *.csv);; Any file(*)")
+    );
+
+    // Call to save file function with fileName
+   
+
+    ui.textBrowser->append("<b style='color: orange'> Save As clicked</b>");
+    ui.textBrowser->append("<b style='color: orange'> Dir is: </b>" + fileName);
+
+
+    QFile savedFile(fileName);
+    if (!savedFile.open(QIODevice::NewOnly | QIODevice::Text))
+    {
+        //return
+    }
+
+    auto nm{ m_spectrometr->getLastWavelengths()};
+    auto spectrum{ m_spectrometr->getLastSpectrum()};
+    
+
+    std::size_t s{ nm.size() };
+
+
+    QTextStream out(&savedFile);// out FROM programm
+    out << "nm,counts\n";
+    for (std::size_t i{ 0 }; i < s; ++i)
+    {
+        out << nm.at(i) << "," << spectrum.at(i) << "\n";
+    } 
+    
+}

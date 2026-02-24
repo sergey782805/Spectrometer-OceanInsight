@@ -8,7 +8,8 @@
 #include "SpectrumProcessor.h"
 #include <QtQml/qqmlengine.h>
 #include <qqmlcontext.h>
-
+#include <qfiledialog.h>
+#include <qstandardpaths.h>
 #include <qqml.h>
 
 
@@ -37,5 +38,6 @@ private:
     void readCorrectedSpectrum();
     void changeAverage();
     void changeIntegrationTime();
+    void saveAs();
 };
 

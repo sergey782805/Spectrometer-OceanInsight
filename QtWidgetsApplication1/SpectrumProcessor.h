@@ -17,8 +17,8 @@ public:
 
 private:
 
-	std::vector<double> m_wavelengths;
-	std::vector<double> m_spectrum;
+	std::vector<double> m_wavelengths; // should I use this to store last read and last opened from file spectrum?
+	std::vector<double> m_spectrum; // when I'm saving spectrum, get data from here?
 
 
 };

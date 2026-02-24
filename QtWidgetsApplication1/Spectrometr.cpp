@@ -41,6 +41,16 @@ const bool Spectrometr::isReady()
 	return m_init;
 }
 
+const std::vector<double> Spectrometr::getLastWavelengths()
+{
+	return m_wavelengths;
+}
+const std::vector<double> Spectrometr::getLastSpectrum()
+{
+	return m_correctedSpectrum;
+}
+
+
 std::size_t Spectrometr::getIndexOfWavelenght(double wavelength)
 {
 	double tempWL; // not nedeed. Hold value of waveLength at index
@@ -61,6 +71,7 @@ void Spectrometr::setIntegrationTime(const unsigned long ms)
 		//odapi_set_integration_time_micros(m_deviceIds[0], &m_errorCode, m_integrationTimeMicroseconds);
 	}
 }
+
 void Spectrometr::setAverageFactor(const unsigned int average)
 {
 	m_averageFactor = average;
@@ -151,7 +162,8 @@ std::vector<double> Spectrometr::readCorrectedSpectrum()
 	{
 		return { -1.0 };
 	}
-	std::vector<double> correctedSpectrum(m_pixelCount);
+	//std::vector<double> correctedSpectrum(m_pixelCount);
+	m_correctedSpectrum.resize(m_pixelCount);
 	
 	odapi_set_scans_to_average(m_deviceIds[0], &m_errorCode, m_averageFactor);
 	odapi_set_integration_time_micros(m_deviceIds[0], &m_errorCode, m_integrationTimeMicroseconds);
@@ -160,9 +172,9 @@ std::vector<double> Spectrometr::readCorrectedSpectrum()
 		&m_errorCode,
 		m_darkSpectrum.data(),
 		(int)m_darkSpectrum.size(), 
-		correctedSpectrum.data(), 
-		(int)correctedSpectrum.size()
+		m_correctedSpectrum.data(), 
+		(int)m_correctedSpectrum.size()
 	);
 	
-	return correctedSpectrum;
+	return m_correctedSpectrum;
 }

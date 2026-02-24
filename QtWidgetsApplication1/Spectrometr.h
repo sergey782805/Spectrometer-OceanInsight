@@ -17,6 +17,8 @@ public:
 	const int getDeviceIdCount();
 	const char getDeviceName(); // not returning proper value!
 	const int getPixelCount();
+	const std::vector<double> getLastWavelengths();
+	const std::vector<double> getLastSpectrum();
 
 	const bool isReady();
 	std::vector<double> readWaveLengths();
@@ -47,6 +49,7 @@ private:
 	std::vector<double> m_spectrum; // not used?
 	int m_intensityCount;
 	std::vector<double> m_darkSpectrum;
+	std::vector<double> m_correctedSpectrum;
 
 
 	unsigned long m_integrationTimeMicroseconds; // ??

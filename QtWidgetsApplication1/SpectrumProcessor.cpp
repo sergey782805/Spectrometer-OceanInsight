@@ -1,7 +1,7 @@
 #include "SpectrumProcessor.h"
 
 SpectrumProcessor::SpectrumProcessor():
-	m_wavelengths{0}, m_spectrum{0}
+	m_wavelengths{0.0}, m_spectrum{0.0}
 {
 
 }
