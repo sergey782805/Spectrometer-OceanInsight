@@ -21,6 +21,7 @@ Spectr::Spectr(QWidget *parent)
     QObject::connect(ui.readCorrectedSpectrum_button, &QPushButton::clicked, this, &Spectr::readCorrectedSpectrum);
     QObject::connect(ui.actionSave_As, &QAction::triggered, this, &Spectr::saveAs);
     QObject::connect(ui.actionSave_As_Relative, &QAction::triggered, this, &Spectr::saveAsRelative);
+    QObject::connect(ui.actionOpen_calibration_file, &QAction::triggered, this, &Spectr::openCalibration);
     resize(800, 600);
 }
 Spectr::~Spectr()
@@ -157,4 +158,42 @@ void Spectr::saveAsRelative()
     {
         out << nm.at(i) << "," << relativeSpectrum.at(i) << "\n";
     }
+}
+void Spectr::openCalibration()
+{
+    QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QString fileName = QFileDialog::getOpenFileName(
+        this,
+        tr("Open calibration file"),
+        desktopPath,
+        tr("calibration file (*.cal);; Any file(*)")
+    );
+
+    QFile openedFile(fileName);
+    if (!openedFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        //return
+    }
+    QTextStream in(&openedFile); // IN to our program
+
+    if(!in.atEnd())
+        QString line = in.readLine(); // first ROW (nm, Coefficient)
+    
+
+    std::vector<double> calibrationNm{};
+    std::vector<double> calibrationCoeff{};
+    while (!in.atEnd())
+    {
+        QString line{ in.readLine() };
+        QStringList splited{ line.split(",") };
+        double nm{ splited.at(0).toDouble() };
+        double coeff{ splited.at(1).toDouble() };
+        calibrationNm.push_back(nm);
+        calibrationCoeff.push_back(coeff);
+
+    }
+    auto calibration = std::pair(calibrationNm, calibrationCoeff);
+
+    
+
 }

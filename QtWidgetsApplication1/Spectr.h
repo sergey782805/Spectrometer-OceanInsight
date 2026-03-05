@@ -40,5 +40,6 @@ private:
     void changeIntegrationTime();
     void saveAs();
     void saveAsRelative();
+    void openCalibration();
 };
 
