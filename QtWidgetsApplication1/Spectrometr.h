@@ -17,12 +17,18 @@ public:
 	const int getDeviceIdCount();
 	const char getDeviceName(); // not returning proper value!
 	const int getPixelCount();
-	const std::vector<double> getLastWavelengths();
+	const std::vector<double> getLastWavelengths(); 
 	const std::vector<double> getLastSpectrum();
+	const unsigned long getIntegrationTime();
+	const unsigned long getMaxIntegrationTime();
+	const unsigned long getMinIntegrationTime();
+
+	const unsigned long detectIntegrationTime();
+
 
 	const bool isReady();
 	std::vector<double> readWaveLengths();
-	std::vector<double> readSpectrum();
+	std::vector<double> readSpectrum(); //can be changed to darkSpectrum
 	std::vector<double> readDarkSpectrum();
 	std::vector<double> readCorrectedSpectrum();
 

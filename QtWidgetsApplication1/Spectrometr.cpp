@@ -49,6 +49,65 @@ const std::vector<double> Spectrometr::getLastSpectrum()
 {
 	return m_correctedSpectrum;
 }
+const unsigned long Spectrometr::getIntegrationTime()
+{
+	if (isReady())
+	{
+		return odapi_get_integration_time_micros(m_deviceIds[0], &m_errorCode);
+	}
+	return 0;
+
+}
+const unsigned long Spectrometr::getMaxIntegrationTime()
+{
+	if (isReady())
+	{
+		return odapi_get_maximum_integration_time_micros(m_deviceIds[0], &m_errorCode);
+	}
+	return 0;
+}
+const unsigned long Spectrometr::getMinIntegrationTime()
+{
+	
+	if (isReady())
+	{
+		if (m_averageFactor > 1)
+		{
+			return odapi_get_minimum_averaging_integration_time_micros(m_deviceIds[0], &m_errorCode);
+			//return odapi_get_minimum_integration_time_micros(m_deviceIds[0], &m_errorCode);
+		}
+		return odapi_get_minimum_integration_time_micros(m_deviceIds[0], &m_errorCode);
+		//oceandirect::api::OceanDirectAPI::getMinimumIntegrationTimeMicros(m_deviceIds[0], &m_errorCode);
+	}
+	return 0;
+}
+
+const unsigned long Spectrometr::detectIntegrationTime()
+{
+	if (!isReady())
+	{
+		return 0;
+	}
+	//need fixes
+	const unsigned long minTime{ getMinIntegrationTime() };
+	const unsigned long maxTime{ getMaxIntegrationTime() };
+	const unsigned long currIntegrationTime{ getIntegrationTime() };
+	const double spectrumMaxIntensity{ *std::max_element(m_correctedSpectrum.begin(), m_correctedSpectrum.end()) };
+	constexpr double targetMaxIntensity{ 65535.0 * 0.9 };
+	constexpr double targetMinIntensity{ targetMaxIntensity * 0.95 };
+	constexpr double targetAverage{ (targetMaxIntensity + targetMinIntensity) / 2.0 };
+
+	unsigned long newIntegrationTime{ currIntegrationTime };
+	if (spectrumMaxIntensity > targetMaxIntensity || spectrumMaxIntensity < targetMinIntensity)// current max intensity > targetMax
+	{
+		newIntegrationTime = static_cast<unsigned long>(currIntegrationTime * (targetAverage / spectrumMaxIntensity));
+	}
+	
+	return static_cast<unsigned long>(std::clamp(newIntegrationTime, minTime, maxTime));
+
+	//return currIntegrationTime; // inside zone
+
+}
 
 
 std::size_t Spectrometr::getIndexOfWavelenght(double wavelength)
@@ -68,13 +127,18 @@ void Spectrometr::setIntegrationTime(const unsigned long ms)
 	if (isReady())
 	{
 		m_integrationTimeMicroseconds = ms;
-		//odapi_set_integration_time_micros(m_deviceIds[0], &m_errorCode, m_integrationTimeMicroseconds);
+		odapi_set_integration_time_micros(m_deviceIds[0], &m_errorCode, m_integrationTimeMicroseconds);
 	}
 }
 
 void Spectrometr::setAverageFactor(const unsigned int average)
 {
-	m_averageFactor = average;
+	if (isReady())
+	{
+		m_averageFactor = average;
+		odapi_set_scans_to_average(m_deviceIds[0], &m_errorCode, m_averageFactor);
+	}
+	
 }
 
 //PRIVATE FUNCTIONS
@@ -112,8 +176,10 @@ int Spectrometr::init()
 	//temp = odapi_get_electric_dark_correction_usage(m_deviceIds[0], &m_errorCode);
 	odapi_apply_nonlinearity_correct_usage(m_deviceIds[0], &m_errorCode, 0);
 	//odapi_get
+	odapi_set_integration_time_micros(m_deviceIds[0], &m_errorCode, m_integrationTimeMicroseconds);
+	odapi_set_scans_to_average(m_deviceIds[0], &m_errorCode, m_averageFactor);
 
-	m_init = 1;
+	m_init = true;
 	return 1;
 }
 std::vector<double> Spectrometr::readWaveLengths()
@@ -138,8 +204,8 @@ std::vector<double> Spectrometr::readSpectrum()
 	
 	m_spectrum.clear();
 	//unsigned int average = 50;//!!
-	odapi_set_scans_to_average(m_deviceIds[0], &m_errorCode, m_averageFactor);
-	odapi_set_integration_time_micros(m_deviceIds[0], &m_errorCode, m_integrationTimeMicroseconds);
+	//odapi_set_scans_to_average(m_deviceIds[0], &m_errorCode, m_averageFactor);
+	//odapi_set_integration_time_micros(m_deviceIds[0], &m_errorCode, m_integrationTimeMicroseconds);
 	//odapi_set_boxcar_width(m_deviceIds[0], &m_errorCode, m_averageFactor);
 	//odapi_get_scans_to_average(m_deviceIds[0], &m_errorCode); USED TO GET AVARAVE VALUE?
 		
@@ -165,15 +231,15 @@ std::vector<double> Spectrometr::readCorrectedSpectrum()
 	//std::vector<double> correctedSpectrum(m_pixelCount);
 	m_correctedSpectrum.resize(m_pixelCount);
 	
-	odapi_set_scans_to_average(m_deviceIds[0], &m_errorCode, m_averageFactor);
-	odapi_set_integration_time_micros(m_deviceIds[0], &m_errorCode, m_integrationTimeMicroseconds);
+	//odapi_set_scans_to_average(m_deviceIds[0], &m_errorCode, m_averageFactor);
+	//odapi_set_integration_time_micros(m_deviceIds[0], &m_errorCode, m_integrationTimeMicroseconds);
 	odapi_get_nonlinearity_corrected_spectrum1(
 		m_deviceIds[0],
 		&m_errorCode,
 		m_darkSpectrum.data(),
-		(int)m_darkSpectrum.size(), 
+		static_cast<int>(m_darkSpectrum.size()), 
 		m_correctedSpectrum.data(), 
-		(int)m_correctedSpectrum.size()
+		static_cast<int>(m_correctedSpectrum.size())
 	);
 	
 	return m_correctedSpectrum;

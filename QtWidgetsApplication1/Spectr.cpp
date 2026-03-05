@@ -15,11 +15,12 @@ Spectr::Spectr(QWidget *parent)
     ui.quickWidget->setSource(QUrl::fromLocalFile("Graph.qml"));
 
     //QObject::connect(ui.pushButton, &QPushButton::clicked, this, &Spectr::updateGraph);
-    QObject::connect(ui.averageValue, &QSpinBox::valueChanged, this, &Spectr::changeAverage);
-    QObject::connect(ui.integrationTimeValue, &QSpinBox::valueChanged, this, &Spectr::changeIntegrationTime);
+    QObject::connect(ui.averageValue, &QSpinBox::editingFinished, this, &Spectr::changeAverage);
+    QObject::connect(ui.integrationTimeValue, &QSpinBox::editingFinished, this, &Spectr::changeIntegrationTime);
     QObject::connect(ui.readDark_button, &QPushButton::clicked, this, &Spectr::readDark);
     QObject::connect(ui.readCorrectedSpectrum_button, &QPushButton::clicked, this, &Spectr::readCorrectedSpectrum);
     QObject::connect(ui.actionSave_As, &QAction::triggered, this, &Spectr::saveAs);
+    QObject::connect(ui.actionSave_As_Relative, &QAction::triggered, this, &Spectr::saveAsRelative);
     resize(800, 600);
 }
 Spectr::~Spectr()
@@ -82,11 +83,15 @@ void Spectr::readCorrectedSpectrum()
     QList<QPointF> data = m_spectrumProcessor->toQList(wavelengths, relativeCorrectedSpectrum);
     m_model->setData(data);
     ui.textBrowser->append("<b style='color: green'> Corrected Spectrum read</b>");
+    ui.textBrowser->append("<b style='color: red'> integration time should be set to: </b>" + QString::number(m_spectrometr->detectIntegrationTime()));
 }
 
 void Spectr::changeAverage()
 {
     m_spectrometr->setAverageFactor(ui.averageValue->value());
+    //ui.textBrowser->append("Min integration time: " + QString::number(m_spectrometr->getMinIntegrationTime()));
+    //ui.textBrowser->append("Max integration time: " + QString::number(m_spectrometr->getMaxIntegrationTime()));
+    //ui.textBrowser->append("Current integration time: " + QString::number(m_spectrometr->getIntegrationTime()));
     //ui.textBrowser->append("Average values now is : " + QString::number(ui.averageValue->value()));
 }
 void Spectr::changeIntegrationTime()
@@ -106,12 +111,8 @@ void Spectr::saveAs()
     );
 
     // Call to save file function with fileName
-   
-
-    ui.textBrowser->append("<b style='color: orange'> Save As clicked</b>");
-    ui.textBrowser->append("<b style='color: orange'> Dir is: </b>" + fileName);
-
-
+    //ui.textBrowser->append("<b style='color: orange'> Save As clicked</b>");
+    //ui.textBrowser->append("<b style='color: orange'> Dir is: </b>" + fileName);
     QFile savedFile(fileName);
     if (!savedFile.open(QIODevice::NewOnly | QIODevice::Text))
     {
@@ -121,9 +122,7 @@ void Spectr::saveAs()
     auto nm{ m_spectrometr->getLastWavelengths()};
     auto spectrum{ m_spectrometr->getLastSpectrum()};
     
-
     std::size_t s{ nm.size() };
-
 
     QTextStream out(&savedFile);// out FROM programm
     out << "nm,counts\n";
@@ -132,4 +131,30 @@ void Spectr::saveAs()
         out << nm.at(i) << "," << spectrum.at(i) << "\n";
     } 
     
+}
+void Spectr::saveAsRelative()
+{
+    QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        tr("Save relative spectrum"),
+        desktopPath + "/RelativeSpectrum1.csv",
+        tr("Text files (*.txt, *.csv);; Any file(*)")
+    );
+    QFile savedFile(fileName);
+    if (!savedFile.open(QIODevice::NewOnly | QIODevice::Text))
+    {
+        //return
+    }
+    auto nm{ m_spectrometr->getLastWavelengths() };
+    auto spectrum{ m_spectrometr->getLastSpectrum() };
+    //auto relativeSpectrum{ m_spectrumProcessor->toRelative(m_spectrometr->getLastSpectrum()) };
+    auto relativeSpectrum{ m_spectrumProcessor->toRelative(spectrum) };
+    std::size_t s{ nm.size() };
+    QTextStream out(&savedFile);// out FROM programm
+    out << "nm,intensity\n";
+    for (std::size_t i{ 0 }; i < s; ++i)
+    {
+        out << nm.at(i) << "," << relativeSpectrum.at(i) << "\n";
+    }
 }

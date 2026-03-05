@@ -32,6 +32,8 @@ QList<QPointF> SpectrumProcessor::toQList(const std::vector<double>& wavelengths
 
 std::vector<double> SpectrumProcessor::toRelative(const std::vector<double> spectrum)
 {
+	if (spectrum.empty())
+		return { -1.0 };
 	std::vector<double> relativeSpectrum;
 	// pass spectrum by reference cause dereference invalid iterator error with *std::max_elemet
 	// pass spectrum by value for now.

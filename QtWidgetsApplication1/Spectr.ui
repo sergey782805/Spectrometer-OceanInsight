@@ -178,17 +178,26 @@
        </item>
        <item row="1" column="1">
         <widget class="QSpinBox" name="integrationTimeValue">
+         <property name="buttonSymbols">
+          <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+         </property>
+         <property name="correctionMode">
+          <enum>QAbstractSpinBox::CorrectionMode::CorrectToNearestValue</enum>
+         </property>
          <property name="prefix">
           <string extracomment="мкс"/>
          </property>
          <property name="minimum">
-          <number>400000</number>
+          <number>220</number>
          </property>
          <property name="maximum">
-          <number>1000000</number>
+          <number>6000000</number>
          </property>
          <property name="singleStep">
           <number>50000</number>
+         </property>
+         <property name="value">
+          <number>400000</number>
          </property>
          <property name="displayIntegerBase">
           <number>10</number>
@@ -270,6 +279,7 @@
      <string>File</string>
     </property>
     <addaction name="actionSave_As"/>
+    <addaction name="actionSave_As_Relative"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -285,6 +295,11 @@
   <action name="actionSave_As">
    <property name="text">
     <string>Save As</string>
+   </property>
+  </action>
+  <action name="actionSave_As_Relative">
+   <property name="text">
+    <string>Save As (Relative)</string>
    </property>
   </action>
  </widget>
