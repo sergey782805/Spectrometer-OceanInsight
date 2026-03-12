@@ -186,7 +186,7 @@ std::vector<double> Spectrometr::readWaveLengths()
 {
 	if (!isReady())
 	{
-		return { -1.0 };
+		return {};
 	}
 	
 	m_wavelengths.clear();
@@ -199,7 +199,7 @@ std::vector<double> Spectrometr::readSpectrum()
 {
 	if (!isReady())
 	{
-		return { -1.0 };
+		return {};
 	}
 	
 	m_spectrum.clear();
@@ -226,7 +226,7 @@ std::vector<double> Spectrometr::readCorrectedSpectrum()
 {
 	if (!isReady())
 	{
-		return { -1.0 };
+		return {};
 	}
 	//std::vector<double> correctedSpectrum(m_pixelCount);
 	m_correctedSpectrum.resize(m_pixelCount);

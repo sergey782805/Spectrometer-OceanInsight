@@ -14,8 +14,8 @@ SpectrumProcessor::~SpectrumProcessor()
 QList<QPointF> SpectrumProcessor::toQList(const std::vector<double>& wavelengths, const std::vector<double>& spectrum)
 {
 	
-	if (wavelengths.size() != spectrum.size())
-		return { QPointF{0, 0} };
+	if (wavelengths.size() != spectrum.size() || wavelengths.empty() || spectrum.empty())
+		return {};
 
 	QPointF point;
 	QList<QPointF> list;
@@ -33,7 +33,7 @@ QList<QPointF> SpectrumProcessor::toQList(const std::vector<double>& wavelengths
 std::vector<double> SpectrumProcessor::toRelative(const std::vector<double> spectrum)
 {
 	if (spectrum.empty())
-		return { -1.0 };
+		return {};
 	std::vector<double> relativeSpectrum;
 	// pass spectrum by reference cause dereference invalid iterator error with *std::max_elemet
 	// pass spectrum by value for now.
@@ -45,49 +45,81 @@ std::vector<double> SpectrumProcessor::toRelative(const std::vector<double> spec
 	}
 	return relativeSpectrum;
 }
-double SpectrumProcessor::PPFD(const std::vector<double>& wavelengths, const std::vector<double>& spectrum, std::size_t lo, std::size_t hi)
+double SpectrumProcessor::PFD(const std::vector<double>& calibratedSpectrum)
 {
-
-	if (wavelengths.size() != spectrum.size()
-		|| lo >= wavelengths.size() - 1
-		|| lo > hi)
-	{
+	if (calibratedSpectrum.size() != m_calibrationWavelengts.size() || calibratedSpectrum.empty() || m_calibrationWavelengts.empty())
 		return 0;
-	}
-	const double h = 6.62607015e-34;
-	const double c = 3e8;
-	const double Na = 6.022e23;
-	//or use 119.7
 
-	
-	//FIND A WAY TO determine indexes 
-	
-	//std::size_t lo{ 0 }; // index at wavelength array with 300 or 400 nm
-	//std::size_t hi{ 0 }; // index at wavelength array with 700 or 800 nm
-	
+	auto itStart{ std::lower_bound(m_calibrationWavelengts.begin(), m_calibrationWavelengts.end(), 350.0) };
+	auto itEnd{ std::lower_bound(m_calibrationWavelengts.begin(), m_calibrationWavelengts.end(), 799.82) };
 
-	double PPFD = 0.0;
+	std::size_t startIndex{ static_cast<std::size_t>(std::distance(m_calibrationWavelengts.begin(), itStart)) };
+	std::size_t endIndex{ static_cast<std::size_t>(std::distance(m_calibrationWavelengts.begin(), itEnd)) };
 
-	//DEBUG
-	//wavelengths.assign({ 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410 });
-	//hi = wavelengths.size();
-
-	//spectrum.assign({ 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05 });
-
-	//from 350 nm to 800 nm
-	//
-	//check for 0 value
-	//double deltaLambda = 0.0;
-	for (std::size_t i{ lo }; i <= hi; ++i)
+	double PFD{ 0 };
+	for (std::size_t i {startIndex}; i <= endIndex; ++i)
 	{
-
-		double wl_m = wavelengths.at(i) * 1e-9; // wavelength in meters
-
-		double E = spectrum.at(i); // spectral irradiance in W/m^2/nm
-
-		if (E > 0.0)
-			PPFD += (E * wl_m) / (h * c) * 1e6 / Na;
+		PFD += calibratedSpectrum[i];
 	}
 
-	return PPFD;
+	return PFD;
+}
+//add std::vector<double>& calibrateNm, std::vector<double>& calibrateCoeff as fields to the class
+std::vector<double> SpectrumProcessor::calibrate(const std::vector<double>& waveLengts, const std::vector<double>& spectrum)
+{
+	if (m_calibrationWavelengts.empty() || m_calibrationCoeff.empty() 
+		|| waveLengts.empty() || spectrum.empty()
+		|| m_calibrationCoeff.size() != m_calibrationWavelengts.size())
+		return {};
+
+	auto start{ std::lower_bound(waveLengts.begin(), waveLengts.end(), m_calibrationWavelengts.front()) };
+	if (start == waveLengts.begin() || start == waveLengts.end())
+		return {};
+	//std::lower_bound not returning EQUEL value, so -1 here
+	const std::size_t startIndex{ static_cast<size_t>(std::distance(waveLengts.begin(), start)) - 1};
+	
+	const std::size_t endIndex{ startIndex + m_calibrationWavelengts.size() };
+
+	if (startIndex == 0 || endIndex >= waveLengts.size())
+		return {};
+	
+
+	if (startIndex > endIndex)
+		return {};
+
+	//std::vector<double> clippedSpectrum(spectrum.begin() + startIndex, spectrum.begin() + startIndex + endIndex);
+
+	//if (clippedSpectrum.size() != calibrateCoeff.size())
+	//	return {};
+	// average dLambda 0.426922127
+	std::vector<double> calibratedSpectrum;
+	double dLambda{ 1 };
+	calibratedSpectrum.reserve(endIndex - startIndex);
+	//for (size_t i{ startIndex }, k{0} ; i < endIndex; ++i, ++k)
+	for(std::size_t i{1}, k{0}; i < m_calibrationCoeff.size(); ++i, ++k)
+	{
+		//calibratedSpectrum.push_back(spectrum[i] * m_calibrationCoeff[k] * 0.426922127);
+		dLambda = m_calibrationWavelengts[i] - m_calibrationWavelengts[i - 1]; // wavelengths[i]???
+		calibratedSpectrum.push_back(spectrum[startIndex + i - 1] * m_calibrationCoeff[i - 1] * dLambda);
+	}
+	calibratedSpectrum.push_back(spectrum[endIndex - 1] * m_calibrationCoeff.back() * dLambda);
+
+	return calibratedSpectrum;
+}
+
+void SpectrumProcessor::setCalibrationWavelengts(const std::vector<double>& calibrationWavelengts)
+{
+	m_calibrationWavelengts = calibrationWavelengts;
+}
+void SpectrumProcessor::setCalibrationCoeff(const std::vector<double>& calibrationCoeff)
+{
+	m_calibrationCoeff = calibrationCoeff;
+}
+std::vector<double> SpectrumProcessor::getCalibrationWavelengts()
+{
+	return m_calibrationWavelengts;
+}
+std::vector<double> SpectrumProcessor::getCalibrationCoeff()
+{
+	return m_calibrationCoeff;
 }

@@ -13,13 +13,20 @@ public:
 
 	std::vector<double> toRelative(const std::vector<double> spectrum);
 
-	double PPFD(const std::vector<double>& wavelengths, const std::vector<double>& spectrum, std::size_t lo, std::size_t hi);
+	double PFD(const std::vector<double>& calibratedSpectrum);
+	std::vector<double> calibrate(const std::vector<double>& waveLengts, const std::vector<double>& spectrum );
 
+	void setCalibrationWavelengts(const std::vector<double>& calibrationWavelengts);
+	void setCalibrationCoeff(const std::vector<double>& calibrationCoeff);
+	std::vector<double> getCalibrationWavelengts();
+	std::vector<double> getCalibrationCoeff();
 private:
 
 	std::vector<double> m_wavelengths; // should I use this to store last read and last opened from file spectrum?
 	std::vector<double> m_spectrum; // when I'm saving spectrum, get data from here?
 
+	std::vector<double> m_calibrationWavelengts;
+	std::vector<double> m_calibrationCoeff;
 
 };
 

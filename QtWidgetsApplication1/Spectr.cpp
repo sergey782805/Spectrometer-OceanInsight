@@ -83,8 +83,15 @@ void Spectr::readCorrectedSpectrum()
 
     QList<QPointF> data = m_spectrumProcessor->toQList(wavelengths, relativeCorrectedSpectrum);
     m_model->setData(data);
+    
+    std::vector<double> calibratedSpectrum{};
+    calibratedSpectrum = m_spectrumProcessor->calibrate(wavelengths, correctedSpectrum);
+    double pfd{m_spectrumProcessor->PFD(calibratedSpectrum)};
+
+
     ui.textBrowser->append("<b style='color: green'> Corrected Spectrum read</b>");
     ui.textBrowser->append("<b style='color: red'> integration time should be set to: </b>" + QString::number(m_spectrometr->detectIntegrationTime()));
+    ui.textBrowser->append("<b style='color: orange'> PPFD: </b>" + QString::number(pfd));
 }
 
 void Spectr::changeAverage()
@@ -192,8 +199,9 @@ void Spectr::openCalibration()
         calibrationCoeff.push_back(coeff);
 
     }
-    auto calibration = std::pair(calibrationNm, calibrationCoeff);
-
+    //auto calibration = std::pair(calibrationNm, calibrationCoeff);
+    m_spectrumProcessor->setCalibrationWavelengts(calibrationNm);
+    m_spectrumProcessor->setCalibrationCoeff(calibrationCoeff);
     
 
 }
