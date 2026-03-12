@@ -86,12 +86,13 @@ void Spectr::readCorrectedSpectrum()
     
     std::vector<double> calibratedSpectrum{};
     calibratedSpectrum = m_spectrumProcessor->calibrate(wavelengths, correctedSpectrum);
-    double pfd{m_spectrumProcessor->PFD(calibratedSpectrum)};
-
+    double pfd{m_spectrumProcessor->PARsum(calibratedSpectrum, 350.0, 799.82)};
+    double ppfd{ m_spectrumProcessor->PARsum(calibratedSpectrum, 400.069 ,699.978) };
 
     ui.textBrowser->append("<b style='color: green'> Corrected Spectrum read</b>");
     ui.textBrowser->append("<b style='color: red'> integration time should be set to: </b>" + QString::number(m_spectrometr->detectIntegrationTime()));
-    ui.textBrowser->append("<b style='color: orange'> PPFD: </b>" + QString::number(pfd));
+    ui.textBrowser->append("<b style='color: orange'> PFD: </b>" + QString::number(pfd));
+    ui.textBrowser->append("<b style='color: orange'> PPFD: </b>" + QString::number(ppfd));
 }
 
 void Spectr::changeAverage()

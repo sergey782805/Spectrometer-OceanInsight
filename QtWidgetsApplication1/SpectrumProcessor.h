@@ -13,7 +13,7 @@ public:
 
 	std::vector<double> toRelative(const std::vector<double> spectrum);
 
-	double PFD(const std::vector<double>& calibratedSpectrum);
+	double PARsum(const std::vector<double>& calibratedSpectrum, const double lo, const double hi);
 	std::vector<double> calibrate(const std::vector<double>& waveLengts, const std::vector<double>& spectrum );
 
 	void setCalibrationWavelengts(const std::vector<double>& calibrationWavelengts);

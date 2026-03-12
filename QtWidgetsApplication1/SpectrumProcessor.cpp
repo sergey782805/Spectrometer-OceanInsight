@@ -45,24 +45,26 @@ std::vector<double> SpectrumProcessor::toRelative(const std::vector<double> spec
 	}
 	return relativeSpectrum;
 }
-double SpectrumProcessor::PFD(const std::vector<double>& calibratedSpectrum)
+double SpectrumProcessor::PARsum(const std::vector<double>& calibratedSpectrum, const double lo, const double hi)
 {
-	if (calibratedSpectrum.size() != m_calibrationWavelengts.size() || calibratedSpectrum.empty() || m_calibrationWavelengts.empty())
+	if (calibratedSpectrum.size() != m_calibrationWavelengts.size()
+		|| calibratedSpectrum.empty() || m_calibrationWavelengts.empty()
+		|| lo > hi)
 		return 0;
 
-	auto itStart{ std::lower_bound(m_calibrationWavelengts.begin(), m_calibrationWavelengts.end(), 350.0) };
-	auto itEnd{ std::lower_bound(m_calibrationWavelengts.begin(), m_calibrationWavelengts.end(), 799.82) };
+	auto itStart{ std::lower_bound(m_calibrationWavelengts.begin(), m_calibrationWavelengts.end(), lo) };
+	auto itEnd{ std::lower_bound(m_calibrationWavelengts.begin(), m_calibrationWavelengts.end(), hi) };
 
 	std::size_t startIndex{ static_cast<std::size_t>(std::distance(m_calibrationWavelengts.begin(), itStart)) };
 	std::size_t endIndex{ static_cast<std::size_t>(std::distance(m_calibrationWavelengts.begin(), itEnd)) };
 
-	double PFD{ 0 };
+	double sum{ 0 };
 	for (std::size_t i {startIndex}; i <= endIndex; ++i)
 	{
-		PFD += calibratedSpectrum[i];
+		sum += calibratedSpectrum[i];
 	}
 
-	return PFD;
+	return sum;
 }
 //add std::vector<double>& calibrateNm, std::vector<double>& calibrateCoeff as fields to the class
 std::vector<double> SpectrumProcessor::calibrate(const std::vector<double>& waveLengts, const std::vector<double>& spectrum)
@@ -87,7 +89,7 @@ std::vector<double> SpectrumProcessor::calibrate(const std::vector<double>& wave
 	if (startIndex > endIndex)
 		return {};
 
-	//std::vector<double> clippedSpectrum(spectrum.begin() + startIndex, spectrum.begin() + startIndex + endIndex);
+	//use LowerBound to find nm from calibrationNM in wavelengts with different step.
 
 	//if (clippedSpectrum.size() != calibrateCoeff.size())
 	//	return {};
