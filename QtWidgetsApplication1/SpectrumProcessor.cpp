@@ -17,31 +17,92 @@ QList<QPointF> SpectrumProcessor::toQList(const std::vector<double>& wavelengths
 	if (wavelengths.size() != spectrum.size() || wavelengths.empty() || spectrum.empty())
 		return {};
 
-	QPointF point;
+	//QPointF point;
 	QList<QPointF> list;
-	
-	for (std::size_t i{ 0 }; i < wavelengths.size(); ++i)
+	std::size_t size{ wavelengths.size() };
+	list.reserve(static_cast<qsizetype> (size));
+
+	for (std::size_t i{ 0 }; i < size; ++i)
 	{
-		point.setX(wavelengths.at(i));
-		point.setY(spectrum.at(i));
-		list.append(point);
+		//point.setX(wavelengths[i]);
+		//point.setY(spectrum[i]);
+		//list.append(point);
+		list.append(QPointF{ wavelengths[i], spectrum[i] });
 	}
 
 	return list;
 }
 
-std::vector<double> SpectrumProcessor::toRelative(const std::vector<double> spectrum)
+std::vector <double>SpectrumProcessor::savitzkyGolayFilter9(const std::vector<double>& spectrum)
+{
+	const std::vector<double> coefficients{ -21.0, 14.0, 39.0, 54.0, 59.0, 54.0, 39.0, 14.0, -21.0 };
+	//
+	if (spectrum.size() < coefficients.size())
+	{
+		return {};
+	}
+	const double normalisation{ 231.0 };
+	std::vector<double> filteredSpectrum(spectrum.size());
+
+	std::size_t size{ spectrum.size() };
+	const int  max{ static_cast<int>((coefficients.size() - 1) / 2) }; 
+	const int  min{ -max }; 
+	for (std::size_t i{ 0 }; i < size; ++i)
+	{
+		double newY{0};
+		for (int k{ min }; k <= max; ++k)
+		{
+			double C{ coefficients[k + max] / normalisation };
+			double Y{ 0 };
+
+			if (i + k < 0)
+			{
+				
+				//i = 0
+				// k = -2
+				//y+2 y+1 y y+1 y+2
+
+				Y = spectrum[i + std::abs(k)];
+			}
+			else if (i + k >= size)
+			{
+				// [1, 2, 3, 4, 5]
+				// 3, 4, 5, 4, 3
+				//i = 4;
+				// k = 1
+				// 
+				Y = spectrum[i - k];
+			}
+			else 
+			{
+				Y = spectrum[i + k];
+			}
+
+			newY += C * Y; //spectrum[i + k];
+		}
+		filteredSpectrum[i] = newY;
+
+	}
+
+	return filteredSpectrum;
+}
+
+std::vector<double> SpectrumProcessor::toRelative(const std::vector<double>& spectrum)
 {
 	if (spectrum.empty())
 		return {};
 	std::vector<double> relativeSpectrum;
+	relativeSpectrum.reserve(spectrum.size());
 	// pass spectrum by reference cause dereference invalid iterator error with *std::max_elemet
 	// pass spectrum by value for now.
 	double max = *std::max_element(spectrum.begin(), spectrum.end());
+	if (max == 0.0)
+	{
+		return {};
+	}
 	for (const auto& i : spectrum)
 	{
-		if (i <= max && max > 0.0)
-			relativeSpectrum.push_back(i / max);
+		relativeSpectrum.push_back(i / max);
 	}
 	return relativeSpectrum;
 }

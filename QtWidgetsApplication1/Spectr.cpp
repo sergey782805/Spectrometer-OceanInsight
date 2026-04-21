@@ -51,8 +51,9 @@ void Spectr::updateGraph()
     //double PPFD = m_spectrumProcessor->PPFD(wavelenghts, spectrum, lo, hi);
 
     std::vector<double> relativeSpectrum = m_spectrumProcessor->toRelative(spectrum);
+    std::vector<double> filteredSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(relativeSpectrum);
     //relativeSpectrum = spectrum;
-    data = m_spectrumProcessor->toQList(wavelenghts, relativeSpectrum);
+    data = m_spectrumProcessor->toQList(wavelenghts, filteredSpectrum);
     //data = m_spectrometr->getNewSpectrum(); // uncomment to read from spectometr
     m_model->setData(data);
     //ui.PPFD->setValue(PPFD);
@@ -80,7 +81,8 @@ void Spectr::readCorrectedSpectrum()
 
     std::vector<double> relativeCorrectedSpectrum = m_spectrumProcessor->toRelative(correctedSpectrum);
     //correctedSpectrum = relative;
-
+    //std::vector<double> filteredCorrectedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(relativeCorrectedSpectrum);
+    //relativeCorrectedSpectrum = m_spectrumProcessor->toRelative(filteredCorrectedSpectrum);
     QList<QPointF> data = m_spectrumProcessor->toQList(wavelengths, relativeCorrectedSpectrum);
     m_model->setData(data);
     
