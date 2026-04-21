@@ -37,10 +37,10 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>6.10.0_msvc2022_64</QtInstall>
-    <QtModules>core;gui;qml;quick;widgets;quickwidgets;graphs</QtModules>
+    <QtModules>core;gui;quick;widgets;quickwidgets;graphs</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
     <QtHeaderSearchPath>C:\Program Files\Ocean Optics\OceanDirect SDK\include</QtHeaderSearchPath>
-    <QtLibrarySearchPath>C:\Qt\6.10.0\msvc2022_64\lib</QtLibrarySearchPath>
+    <QtLibrarySearchPath>C:\Program Files\Ocean Optics\OceanDirect SDK\lib;$(QtLibrarySearchPath)</QtLibrarySearchPath>
     <QtPlugin>true</QtPlugin>
     <QMakeExtraArgs>
     </QMakeExtraArgs>
@@ -49,8 +49,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>6.10.0_msvc2022_64</QtInstall>
-    <QtModules>core5compat;charts;core;gui;opengl;openglwidgets;widgets</QtModules>
+    <QtModules>core;gui;quick;widgets;quickwidgets;graphs</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
+    <QtHeaderSearchPath>C:\Program Files\Ocean Optics\OceanDirect SDK\include;$(QtHeaderSearchPath)</QtHeaderSearchPath>
+    <QtLibrarySearchPath>C:\Program Files\Ocean Optics\OceanDirect SDK\lib;$(QtLibrarySearchPath)</QtLibrarySearchPath>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
     <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
@@ -67,13 +69,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>C:\Qt\6.10.0\msvc2022_64\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalDependencies>C:\Program Files\Ocean Optics\OceanDirect SDK\lib\*.lib;C:\Qt\6.10.0\msvc2022_64\lib\Qt6Graphs.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OceanDirect.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files\Ocean Optics\OceanDirect SDK\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Link>
+      <AdditionalLibraryDirectories>C:\Program Files\Ocean Optics\OceanDirect SDK\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OceanDirect.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
