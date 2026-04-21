@@ -1,4 +1,4 @@
-#include "Spectr.h"
+#include "MainWindow.h"
 #include "GraphModel.h"
 #include <QtWidgets/QApplication>
 
@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
     //qmlRegisterType<GraphModel>("CustomTypes", 1, 0, "GraphModel");
 
-    Spectr window;
+    MainWindow window;
 
     //QQuickWidget::setInitialProperties()
 

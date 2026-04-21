@@ -118,10 +118,10 @@
     <ClCompile Include="SpectrumFileHandler.cpp" />
     <ClCompile Include="SpectrumProcessor.cpp" />
     <QtRcc Include="Spectr.qrc" />
-    <QtUic Include="Spectr.ui" />
-    <QtMoc Include="Spectr.h" />
+    <QtUic Include="MainWindow.ui" />
+    <QtMoc Include="MainWindow.h" />
     <ClCompile Include="GraphModel.cpp" />
-    <ClCompile Include="Spectr.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -12,21 +12,19 @@
 #include <qstandardpaths.h>
 #include <qqml.h>
 
+#include "ui_MainWindow.h"
 
-
-#include "ui_Spectr.h"
-
-class Spectr : public QMainWindow
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Spectr(QWidget *parent = nullptr);
-    ~Spectr();
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
 
     
 private:
-    Ui::SpectrClass ui;
+    Ui::MainWindow ui;
     
     GraphModel* m_model;
     Spectrometer* m_spectrometr;

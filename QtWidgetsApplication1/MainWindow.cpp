@@ -1,7 +1,7 @@
-#include "spectr.h"
+#include "MainWindow.h"
 
 
-Spectr::Spectr(QWidget *parent)
+MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), m_model {nullptr}, m_spectrometr {nullptr}, m_spectrumProcessor{nullptr}
 {
     ui.setupUi(this);
@@ -15,16 +15,16 @@ Spectr::Spectr(QWidget *parent)
     ui.quickWidget->setSource(QUrl("qrc:/Spectr/Graph.qml"));
 
     //QObject::connect(ui.pushButton, &QPushButton::clicked, this, &Spectr::updateGraph);
-    QObject::connect(ui.averageValue, &QSpinBox::editingFinished, this, &Spectr::changeAverage);
-    QObject::connect(ui.integrationTimeValue, &QSpinBox::editingFinished, this, &Spectr::changeIntegrationTime);
-    QObject::connect(ui.readDark_button, &QPushButton::clicked, this, &Spectr::readDark);
-    QObject::connect(ui.readCorrectedSpectrum_button, &QPushButton::clicked, this, &Spectr::readCorrectedSpectrum);
-    QObject::connect(ui.actionSave_As, &QAction::triggered, this, &Spectr::saveAs);
-    QObject::connect(ui.actionSave_As_Relative, &QAction::triggered, this, &Spectr::saveAsRelative);
-    QObject::connect(ui.actionOpen_calibration_file, &QAction::triggered, this, &Spectr::openCalibration);
+    QObject::connect(ui.averageValue, &QSpinBox::editingFinished, this, &MainWindow::changeAverage);
+    QObject::connect(ui.integrationTimeValue, &QSpinBox::editingFinished, this, &MainWindow::changeIntegrationTime);
+    QObject::connect(ui.readDark_button, &QPushButton::clicked, this, &MainWindow::readDark);
+    QObject::connect(ui.readCorrectedSpectrum_button, &QPushButton::clicked, this, &MainWindow::readCorrectedSpectrum);
+    QObject::connect(ui.actionSave_As, &QAction::triggered, this, &MainWindow::saveAs);
+    QObject::connect(ui.actionSave_As_Relative, &QAction::triggered, this, &MainWindow::saveAsRelative);
+    QObject::connect(ui.actionOpen_calibration_file, &QAction::triggered, this, &MainWindow::openCalibration);
     resize(800, 600);
 }
-Spectr::~Spectr()
+MainWindow::~MainWindow()
 {
     delete m_spectrumProcessor;
     m_spectrumProcessor = nullptr;
@@ -33,7 +33,7 @@ Spectr::~Spectr()
     delete m_model;
     m_model = nullptr;
 }
-void Spectr::readDark()
+void MainWindow::readDark()
 {
     std::vector<double> wavelengths = m_spectrometr->readWaveLengths();
     std::vector<double> darkSpectrum = m_spectrometr->readDarkSpectrum();
@@ -47,7 +47,7 @@ void Spectr::readDark()
     ui.textBrowser->append("<b style='color: green'> Dark Spectrum read</b>");
 
 }
-void Spectr::readCorrectedSpectrum()
+void MainWindow::readCorrectedSpectrum()
 {
     std::vector<double> wavelengths = m_spectrometr->readWaveLengths();
     std::vector<double> correctedSpectrum = m_spectrometr->readCorrectedSpectrum();
@@ -70,7 +70,7 @@ void Spectr::readCorrectedSpectrum()
     ui.textBrowser->append("<b style='color: orange'> PPFD: </b>" + QString::number(ppfd));
 }
 
-void Spectr::changeAverage()
+void MainWindow::changeAverage()
 {
     m_spectrometr->setAverageFactor(ui.averageValue->value());
     //ui.textBrowser->append("Min integration time: " + QString::number(m_spectrometr->getMinIntegrationTime()));
@@ -78,13 +78,13 @@ void Spectr::changeAverage()
     //ui.textBrowser->append("Current integration time: " + QString::number(m_spectrometr->getIntegrationTime()));
     //ui.textBrowser->append("Average values now is : " + QString::number(ui.averageValue->value()));
 }
-void Spectr::changeIntegrationTime()
+void MainWindow::changeIntegrationTime()
 {
     m_spectrometr->setIntegrationTime(ui.integrationTimeValue->value());
     //ui.textBrowser->append("Integration time now is: " + QString::number(ui.integrationTimeValue->value()));
 }
 
-void Spectr::saveAs()
+void MainWindow::saveAs()
 {
     QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
     QString fileName = QFileDialog::getSaveFileName(
@@ -116,7 +116,7 @@ void Spectr::saveAs()
     } 
     
 }
-void Spectr::saveAsRelative()
+void MainWindow::saveAsRelative()
 {
     QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
     QString fileName = QFileDialog::getSaveFileName(
@@ -142,7 +142,7 @@ void Spectr::saveAsRelative()
         out << nm.at(i) << "," << relativeSpectrum.at(i) << "\n";
     }
 }
-void Spectr::openCalibration()
+void MainWindow::openCalibration()
 {
     QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
     QString fileName = QFileDialog::getOpenFileName(
