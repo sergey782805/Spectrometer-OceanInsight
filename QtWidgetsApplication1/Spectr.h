@@ -4,7 +4,7 @@
 #include <QQuickWidget>
 #include <QtGraphs/qsplineseries.h>
 #include "GraphModel.h"
-#include "Spectrometr.h"
+#include "Spectrometer.h"
 #include "SpectrumProcessor.h"
 #include <QtQml/qqmlengine.h>
 #include <qqmlcontext.h>
@@ -29,7 +29,7 @@ private:
     Ui::SpectrClass ui;
     
     GraphModel* m_model;
-    Spectrometr* m_spectrometr;
+    Spectrometer* m_spectrometr;
     SpectrumProcessor* m_spectrumProcessor;
     
     void readDark();

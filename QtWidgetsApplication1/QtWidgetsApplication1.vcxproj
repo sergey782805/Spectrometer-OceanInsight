@@ -105,7 +105,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Spectrometr.cpp" />
+    <ClCompile Include="Spectrometer.cpp" />
     <ClCompile Include="SpectrumFileHandler.cpp" />
     <ClCompile Include="SpectrumProcessor.cpp" />
     <QtRcc Include="Spectr.qrc" />
@@ -125,7 +125,7 @@
     <Text Include="Notes.txt" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="Spectrometr.h" />
+    <QtMoc Include="Spectrometer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SpectrumFileHandler.h" />

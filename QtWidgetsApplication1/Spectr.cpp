@@ -7,7 +7,7 @@ Spectr::Spectr(QWidget *parent)
     ui.setupUi(this);
 
     m_model = new GraphModel();
-    m_spectrometr = new Spectrometr();
+    m_spectrometr = new Spectrometer();
     m_spectrumProcessor = new SpectrumProcessor();
 
     ui.quickWidget->engine()->rootContext()->setContextProperty("myModel", m_model);

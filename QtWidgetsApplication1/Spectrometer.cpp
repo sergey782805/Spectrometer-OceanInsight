@@ -1,7 +1,7 @@
-#include "Spectrometr.h"
+#include "Spectrometer.h"
 
 
-Spectrometr::Spectrometr() :
+Spectrometer::Spectrometer() :
 	m_averageFactor{ 1 }, m_integrationTimeMicroseconds{ 400000 },
 	m_pixelCount{ 0 }
 {
@@ -9,7 +9,7 @@ Spectrometr::Spectrometr() :
 	m_darkSpectrum.resize(m_pixelCount);
 
 }
-Spectrometr::~Spectrometr()
+Spectrometer::~Spectrometer()
 {
 	m_wavelengths.clear();
 	if (isReady())
@@ -21,20 +21,20 @@ Spectrometr::~Spectrometr()
 //GET functions PUBLIC
 
 
-const bool Spectrometr::isReady()
+const bool Spectrometer::isReady()
 {
 	return m_init;
 }
 
-const std::vector<double> Spectrometr::getLastWavelengths()
+const std::vector<double> Spectrometer::getLastWavelengths()
 {
 	return m_wavelengths;
 }
-const std::vector<double> Spectrometr::getLastSpectrum()
+const std::vector<double> Spectrometer::getLastSpectrum()
 {
 	return m_correctedSpectrum;
 }
-const unsigned long Spectrometr::getIntegrationTime()
+const unsigned long Spectrometer::getIntegrationTime()
 {
 	if (isReady())
 	{
@@ -43,7 +43,7 @@ const unsigned long Spectrometr::getIntegrationTime()
 	return 0;
 
 }
-const unsigned long Spectrometr::getMaxIntegrationTime()
+const unsigned long Spectrometer::getMaxIntegrationTime()
 {
 	if (isReady())
 	{
@@ -51,7 +51,7 @@ const unsigned long Spectrometr::getMaxIntegrationTime()
 	}
 	return 0;
 }
-const unsigned long Spectrometr::getMinIntegrationTime()
+const unsigned long Spectrometer::getMinIntegrationTime()
 {
 	
 	if (isReady())
@@ -67,7 +67,7 @@ const unsigned long Spectrometr::getMinIntegrationTime()
 	return 0;
 }
 
-const unsigned long Spectrometr::detectIntegrationTime()
+const unsigned long Spectrometer::detectIntegrationTime()
 {
 	if (!isReady())
 	{
@@ -95,7 +95,7 @@ const unsigned long Spectrometr::detectIntegrationTime()
 }
 
 
-std::size_t Spectrometr::getIndexOfWavelenght(double wavelength)
+std::size_t Spectrometer::getIndexOfWavelenght(double wavelength)
 {
 	double tempWL; // not nedeed. Hold value of waveLength at index
 	std::size_t index{0};
@@ -107,7 +107,7 @@ std::size_t Spectrometr::getIndexOfWavelenght(double wavelength)
 }
 // SET FUNCTIONS PUBLIC
 
-void Spectrometr::setIntegrationTime(const unsigned long ms)
+void Spectrometer::setIntegrationTime(const unsigned long ms)
 {
 	if (isReady())
 	{
@@ -116,7 +116,7 @@ void Spectrometr::setIntegrationTime(const unsigned long ms)
 	}
 }
 
-void Spectrometr::setAverageFactor(const unsigned int average)
+void Spectrometer::setAverageFactor(const unsigned int average)
 {
 	if (isReady())
 	{
@@ -127,7 +127,7 @@ void Spectrometr::setAverageFactor(const unsigned int average)
 }
 
 //PRIVATE FUNCTIONS
-int Spectrometr::init()
+int Spectrometer::init()
 {
 	int deviceCount{ odapi_probe_devices() };
 
@@ -162,7 +162,7 @@ int Spectrometr::init()
 	m_init = true;
 	return 1;
 }
-std::vector<double> Spectrometr::readWaveLengths()
+std::vector<double> Spectrometer::readWaveLengths()
 {
 	if (!isReady())
 	{
@@ -175,7 +175,7 @@ std::vector<double> Spectrometr::readWaveLengths()
 	return m_wavelengths;
 	
 }
-std::vector<double> Spectrometr::readDarkSpectrum()
+std::vector<double> Spectrometer::readDarkSpectrum()
 {
 	if (!isReady())
 	{
@@ -189,7 +189,7 @@ std::vector<double> Spectrometr::readDarkSpectrum()
 
 	return m_darkSpectrum;
 }
-std::vector<double> Spectrometr::readCorrectedSpectrum()
+std::vector<double> Spectrometer::readCorrectedSpectrum()
 {
 	if (!isReady())
 	{

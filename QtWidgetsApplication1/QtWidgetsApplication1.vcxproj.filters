@@ -43,7 +43,7 @@
     <ClCompile Include="GraphModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Spectrometr.cpp">
+    <ClCompile Include="Spectrometer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SpectrumProcessor.cpp">
@@ -62,7 +62,7 @@
     <QtMoc Include="GraphModel.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="Spectrometr.h">
+    <QtMoc Include="Spectrometer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -5,13 +5,13 @@
 #include <vector>
 #include <memory>
 #include <math.h>
-class Spectrometr : QObject
+class Spectrometer : QObject
 {
 	Q_OBJECT
 
 public:
-	Spectrometr();
-	~Spectrometr();
+	Spectrometer();
+	~Spectrometer();
 
 	const std::vector<double> getLastWavelengths(); 
 	const std::vector<double> getLastSpectrum();
