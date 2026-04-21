@@ -12,7 +12,7 @@ Spectr::Spectr(QWidget *parent)
 
     ui.quickWidget->engine()->rootContext()->setContextProperty("myModel", m_model);
   
-    ui.quickWidget->setSource(QUrl::fromLocalFile("Graph.qml"));
+    ui.quickWidget->setSource(QUrl("qrc:/Spectr/Graph.qml"));
 
     //QObject::connect(ui.pushButton, &QPushButton::clicked, this, &Spectr::updateGraph);
     QObject::connect(ui.averageValue, &QSpinBox::editingFinished, this, &Spectr::changeAverage);
