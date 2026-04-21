@@ -33,33 +33,6 @@ Spectr::~Spectr()
     delete m_model;
     m_model = nullptr;
 }
-//This function is DEPRECATED, should be deleted 
-void Spectr::updateGraph()
-{
-
-    QList<QPointF> data;
-    std::vector<double> wavelenghts = m_spectrometr->readWaveLengths();
-    std::vector<double> spectrum = m_spectrometr->readSpectrum();
-
-    //std::vector<double> spectrumRelative = m_spectrumProcessor->toRelative(spectrum);
-
-
-    //wavelenghts = { 400, 500, 600, 650, 700, 750, 800, 850, 900, 950, 1000 };
-    //spectrum = { 0.1, 0.3, 0.6, 0.1, 0.9, 0.8, 2.5, 0.2, 0.25, 0.5, 0.05 };
-
-
-    //double PPFD = m_spectrumProcessor->PPFD(wavelenghts, spectrum, lo, hi);
-
-    std::vector<double> relativeSpectrum = m_spectrumProcessor->toRelative(spectrum);
-    std::vector<double> filteredSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(relativeSpectrum);
-    //relativeSpectrum = spectrum;
-    data = m_spectrumProcessor->toQList(wavelenghts, filteredSpectrum);
-    //data = m_spectrometr->getNewSpectrum(); // uncomment to read from spectometr
-    m_model->setData(data);
-    //ui.PPFD->setValue(PPFD);
-    //ui.textBrowser->append(QString::number(m_spectrumProcessor->PPFD(wavelenghts, spectrum, lo, hi)));
-    ui.textBrowser->append("<b style='color: orange'> Non-corrected Spectrum read </b>");
-} // Deprecated
 void Spectr::readDark()
 {
     std::vector<double> wavelengths = m_spectrometr->readWaveLengths();

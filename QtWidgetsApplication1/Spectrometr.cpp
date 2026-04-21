@@ -12,7 +12,6 @@ Spectrometr::Spectrometr() :
 Spectrometr::~Spectrometr()
 {
 	m_wavelengths.clear();
-	m_spectrum.clear();
 	if (isReady())
 	{
 		odapi_close_device(m_deviceIds[0], &m_errorCode);
@@ -20,22 +19,8 @@ Spectrometr::~Spectrometr()
 	}
 }
 //GET functions PUBLIC
-const int Spectrometr::getdeviceCount()
-{
-	return m_deviceCount;
-}
-const int Spectrometr::getDeviceIdCount()
-{
-	return m_deviceIdCount;
-}
-const char Spectrometr::getDeviceName()
-{
-	return m_deviceName[32];
-}
-const int Spectrometr::getPixelCount()
-{
-	return m_pixelCount;
-}
+
+
 const bool Spectrometr::isReady()
 {
 	return m_init;
@@ -144,22 +129,17 @@ void Spectrometr::setAverageFactor(const unsigned int average)
 //PRIVATE FUNCTIONS
 int Spectrometr::init()
 {
-	m_deviceCount = odapi_probe_devices();
+	int deviceCount{ odapi_probe_devices() };
 
-	if (m_deviceCount < 1)
+	if (deviceCount < 1)
 	{
 		m_init = false;
 		return -1;
 	}
-	m_deviceIdCount = odapi_get_number_of_device_ids();
-	m_deviceIds.resize(m_deviceIdCount);
-	m_retrievedIdCount = odapi_get_device_ids(m_deviceIds.data(), m_deviceIdCount);
+	int deviceIdCount {odapi_get_number_of_device_ids()};
+	m_deviceIds.resize(deviceIdCount);
+	odapi_get_device_ids(m_deviceIds.data(), deviceIdCount);
 	odapi_open_device(m_deviceIds[0], &m_errorCode);
-	if (m_errorCode > 0 && m_errorCode < 10001) {
-		m_init = false;
-		return -1;
-	}
-	odapi_get_device_name(m_deviceIds[0], &m_errorCode, m_deviceName, 32);
 	if (m_errorCode > 0 && m_errorCode < 10001) {
 		m_init = false;
 		return -1;
@@ -191,35 +171,22 @@ std::vector<double> Spectrometr::readWaveLengths()
 	
 	m_wavelengths.clear();
 	m_wavelengths.resize(m_pixelCount);
-	m_wavelengthCount = odapi_get_wavelengths(m_deviceIds[0], &m_errorCode, m_wavelengths.data(), m_pixelCount);
+	odapi_get_wavelengths(m_deviceIds[0], &m_errorCode, m_wavelengths.data(), m_pixelCount);
 	return m_wavelengths;
 	
 }
-std::vector<double> Spectrometr::readSpectrum()
+std::vector<double> Spectrometr::readDarkSpectrum()
 {
 	if (!isReady())
 	{
 		return {};
 	}
-	
-	m_spectrum.clear();
-	//unsigned int average = 50;//!!
-	//odapi_set_scans_to_average(m_deviceIds[0], &m_errorCode, m_averageFactor);
-	//odapi_set_integration_time_micros(m_deviceIds[0], &m_errorCode, m_integrationTimeMicroseconds);
-	//odapi_set_boxcar_width(m_deviceIds[0], &m_errorCode, m_averageFactor);
-	//odapi_get_scans_to_average(m_deviceIds[0], &m_errorCode); USED TO GET AVARAVE VALUE?
-		
-	m_spectrum.resize(m_pixelCount);
-	m_intensityCount = odapi_get_formatted_spectrum(m_deviceIds[0], &m_errorCode, m_spectrum.data(), m_pixelCount);
-		
-	//double tempMin{ *std::min_element(m_spectrum.begin(), m_spectrum.end() )};
 
-	return m_spectrum;
-	
-}
-std::vector<double> Spectrometr::readDarkSpectrum()
-{
-	m_darkSpectrum = readSpectrum();
+	m_darkSpectrum.clear();
+
+	m_darkSpectrum.resize(m_pixelCount);
+	odapi_get_formatted_spectrum(m_deviceIds[0], &m_errorCode, m_darkSpectrum.data(), m_pixelCount);
+
 	return m_darkSpectrum;
 }
 std::vector<double> Spectrometr::readCorrectedSpectrum()
