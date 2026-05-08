@@ -36,7 +36,7 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtInstall>6.10.0_msvc2022_64</QtInstall>
+    <QtInstall>6.11.0_msvc2022_64</QtInstall>
     <QtModules>core;gui;quick;widgets;quickwidgets;graphs</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
     <QtHeaderSearchPath>C:\Program Files\Ocean Optics\OceanDirect SDK\include</QtHeaderSearchPath>
@@ -48,7 +48,7 @@
     <QtQMLDebugEnable>false</QtQMLDebugEnable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtInstall>6.10.0_msvc2022_64</QtInstall>
+    <QtInstall>6.11.0_msvc2022_64</QtInstall>
     <QtModules>core;gui;quick;widgets;quickwidgets;graphs</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
     <QtHeaderSearchPath>C:\Program Files\Ocean Optics\OceanDirect SDK\include;$(QtHeaderSearchPath)</QtHeaderSearchPath>

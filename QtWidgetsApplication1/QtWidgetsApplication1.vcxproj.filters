@@ -26,15 +26,6 @@
     <QtRcc Include="Spectr.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <QtUic Include="Spectr.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtMoc Include="Spectr.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <ClCompile Include="Spectr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -52,6 +43,9 @@
     <ClCompile Include="SpectrumFileHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Graph.qml">
@@ -65,6 +59,9 @@
     <QtMoc Include="Spectrometer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="MainWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Notes.txt" />
@@ -76,5 +73,10 @@
     <ClInclude Include="SpectrumFileHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="MainWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
 </Project>
