@@ -51,11 +51,20 @@ void MainWindow::readCorrectedSpectrum()
 {
     std::vector<double> wavelengths = m_spectrometr->readWaveLengths();
     std::vector<double> correctedSpectrum = m_spectrometr->readCorrectedSpectrum();
+    //wavelengths = {200, 250,  300, 400, 500, 650, 700, 750, 780, 800, 820, 850 };
+    //correctedSpectrum = { 50, 70, 20, 30, 40, 10, 15, 1, 80, 50, 11, 15 };
+    switch (ui.filter->currentIndex())
+    {
+    case 1: // savitzkyGolayFilter9
+        correctedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(correctedSpectrum);
+        break;
+    default: // no filter
+
+        break;
+    }
 
     std::vector<double> relativeCorrectedSpectrum = m_spectrumProcessor->toRelative(correctedSpectrum);
-    //correctedSpectrum = relative;
-    //std::vector<double> filteredCorrectedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(relativeCorrectedSpectrum);
-    //relativeCorrectedSpectrum = m_spectrumProcessor->toRelative(filteredCorrectedSpectrum);
+    
     QList<QPointF> data = m_spectrumProcessor->toQList(wavelengths, relativeCorrectedSpectrum);
     m_model->setData(data);
     
