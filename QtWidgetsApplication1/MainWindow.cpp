@@ -51,7 +51,7 @@ void MainWindow::readCorrectedSpectrum()
 {
     std::vector<double> wavelengths = m_spectrometr->readWaveLengths();
     std::vector<double> correctedSpectrum = m_spectrometr->readCorrectedSpectrum();
-    wavelengths = {200, 250,  300, 400, 500, 650, 700, 750, 780, 800, 820, 850 };
+    wavelengths = {179, 380,  400, 450, 485, 500, 565, 590, 625, 780, 900, 1058 };
     correctedSpectrum = { 50, 70, 20, 30, 40, 10, 15, 1, 80, 50, 11, 15 };
     switch (ui.filter->currentIndex())
     {

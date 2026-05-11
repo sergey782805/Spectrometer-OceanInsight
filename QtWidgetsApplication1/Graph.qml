@@ -1,4 +1,5 @@
 // LineGraph.qml
+pragma ComponentBehavior: Bound
 import QtGraphs
 import QtQuick
 import QtQuick.Shapes
@@ -6,6 +7,8 @@ import QtQuick.Shapes
  
 GraphsView {
     
+    id: graphView    
+
     Connections{ // NOT NEEDET AT ALL
         target: myModel
         
@@ -29,8 +32,8 @@ GraphsView {
 
     }
 
-    anchors.fill: parent
-    anchors.margins: 0
+    //anchors.fill: parent
+    //anchors.margins: 0
     
     theme: GraphsTheme 
     {
@@ -59,46 +62,32 @@ GraphsView {
     }
 
     //from module 
-    AreaSeries 
+    LineSeries 
     {
-        
+        id: series
         //id: series
         //XYPoint { x: 0; y: 0.1 }
         //XYPoint { x: 1; y: 0.5 }
-        upperSeries:LineSeries 
-        {
-            id: series
-        }
-        
+        //upperSeries:LineSeries 
+        //{
+        //    id: series
+        //}
         //gradient: LinearGradient {
         
-        //x1: 0
-        //y1: 0
-        //x2: parent.width  // Конечная точка по горизонтали (правый край)
-        //y2: 0 
-        //purple
-        //GradientStop { position: 0.345; color: "#8B00FF" }
-        //GradientStop { position: 0.409; color: "#8B00FF" }
-        //blue
-        //GradientStop { position: 0.409; color: "blue" }
-        //GradientStop { position: 0.4409; color: "blue" }
-        //cyan
-        //GradientStop { position: 0.4409; color: "cyan" }
-        //GradientStop { position: 0.4545; color: "cyan" }
-        //green
-        //GradientStop { position: 0.4545; color: "green" }
-        //GradientStop { position: 0.5136; color: "green" }
-        //yellow
-        //GradientStop { position: 0.5136; color: "yellow" }
-        //GradientStop { position: 0.536; color: "yellow" }
-        //orange
-        //GradientStop { position: 0.536; color: "orange" }
-        //GradientStop { position: 0.5681; color: "orange" }
-        //red
-        //GradientStop { position: 0.5681; color: "red" }
-        //GradientStop { position: 0.709; color: "red" }
+        //x2: parent.width
 
-    //}
+    //GradientStop { position: 0.0; color: "black" }
+    //GradientStop { position: 0.228; color: "#8B00FF" } // 380 нм
+    //GradientStop { position: 0.308; color: "blue" }    // 450 нм
+    //GradientStop { position: 0.365; color: "cyan" }    // 500 нм
+    //GradientStop { position: 0.439; color: "green" }   // 565 нм
+    //GradientStop { position: 0.467; color: "yellow" }  // 590 нм
+    //GradientStop { position: 0.507; color: "orange" }  // 625 нм
+    //GradientStop { position: 0.683; color: "red" }     // 780 нм
+    //GradientStop { position: 0.75; color: "black" }
+    //GradientStop { position: 1.0; color: "black" }
+
+    }
 
 
         
@@ -108,8 +97,4 @@ GraphsView {
  
     //series.remo
   
-   
-
- 
-    
-}
+  
