@@ -12,7 +12,7 @@ public:
 	QList<QPointF> toQList(const std::vector<double>& wavelengths, const std::vector<double>& spectrum);
 	std::vector <double> savitzkyGolayFilter9(const std::vector<double>& spectrum);
 	std::vector<double> toRelative(const std::vector<double>& spectrum);
-
+	std::vector<double> adjustDarkSpectrum(const std::vector<double>& darkSpectrum,const unsigned long oldTime, const unsigned long newTime);
 	double PARsum(const std::vector<double>& calibratedSpectrum, const double lo, const double hi);
 	std::vector<double> calibrate(const std::vector<double>& waveLengts, const std::vector<double>& spectrum );
 

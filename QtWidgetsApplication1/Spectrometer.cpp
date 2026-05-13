@@ -2,7 +2,7 @@
 
 
 Spectrometer::Spectrometer() :
-	m_averageFactor{ 1 }, m_integrationTimeMicroseconds{ 400000 },
+	m_averageFactor{ 1 }, m_integrationTimeMicroseconds{ 400000 }, m_darkIntegrationTimeMicroseconds{ 0 },
 	m_pixelCount{ 0 }
 {
 	init(); // searching spectrometr during program start
@@ -43,6 +43,10 @@ const unsigned long Spectrometer::getIntegrationTime()
 	return 0;
 
 }
+const unsigned long Spectrometer::getDarkIntegrationTime()
+{
+	return m_darkIntegrationTimeMicroseconds;
+}
 const unsigned long Spectrometer::getMaxIntegrationTime()
 {
 	if (isReady())
@@ -66,7 +70,11 @@ const unsigned long Spectrometer::getMinIntegrationTime()
 	}
 	return 0;
 }
-
+std::vector<double> Spectrometer::getDarkSpectrum()
+{
+	if(isReady())
+		return m_darkSpectrum;
+}
 const unsigned long Spectrometer::detectIntegrationTime()
 {
 	if (!isReady())
@@ -125,7 +133,14 @@ void Spectrometer::setAverageFactor(const unsigned int average)
 	}
 	
 }
-
+void Spectrometer::setDarkSpectrum(const std::vector<double>& darkSpectrum)
+{
+	m_darkSpectrum = darkSpectrum;
+}
+void Spectrometer::setDarkIntegrationTime(const unsigned long newTime)
+{
+	m_darkIntegrationTimeMicroseconds = newTime;
+}
 //PRIVATE FUNCTIONS
 int Spectrometer::init()
 {
@@ -186,6 +201,8 @@ std::vector<double> Spectrometer::readDarkSpectrum()
 
 	m_darkSpectrum.resize(m_pixelCount);
 	odapi_get_formatted_spectrum(m_deviceIds[0], &m_errorCode, m_darkSpectrum.data(), m_pixelCount);
+
+	m_darkIntegrationTimeMicroseconds = m_integrationTimeMicroseconds;
 
 	return m_darkSpectrum;
 }
