@@ -2,12 +2,12 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), m_model {nullptr}, m_spectrometr {nullptr}, m_spectrumProcessor{nullptr}
+    : QMainWindow(parent), m_model {nullptr}, m_spectrometer {nullptr}, m_spectrumProcessor{nullptr}
 {
     ui.setupUi(this);
 
     m_model = new GraphModel();
-    m_spectrometr = new Spectrometer();
+    m_spectrometer = new Spectrometer();
     m_spectrumProcessor = new SpectrumProcessor();
 
     ui.quickWidget->engine()->rootContext()->setContextProperty("myModel", m_model);
@@ -28,15 +28,15 @@ MainWindow::~MainWindow()
 {
     delete m_spectrumProcessor;
     m_spectrumProcessor = nullptr;
-    delete m_spectrometr;
-    m_spectrometr = nullptr;
+    delete m_spectrometer;
+    m_spectrometer = nullptr;
     delete m_model;
     m_model = nullptr;
 }
 void MainWindow::readDark()
 {
-    std::vector<double> wavelengths = m_spectrometr->readWaveLengths();
-    std::vector<double> darkSpectrum = m_spectrometr->readDarkSpectrum();
+    std::vector<double> wavelengths = m_spectrometer->readWaveLengths();
+    std::vector<double> darkSpectrum = m_spectrometer->readDarkSpectrum();
 
     std::vector<double> darkRelative = m_spectrumProcessor->toRelative(darkSpectrum);
     //darkSpectrum = darkRelative;
@@ -49,8 +49,8 @@ void MainWindow::readDark()
 }
 void MainWindow::readCorrectedSpectrum()
 {
-    std::vector<double> wavelengths = m_spectrometr->readWaveLengths();
-    std::vector<double> correctedSpectrum = m_spectrometr->readCorrectedSpectrum();
+    std::vector<double> wavelengths = m_spectrometer->readWaveLengths();
+    std::vector<double> correctedSpectrum = m_spectrometer->readCorrectedSpectrum();
     wavelengths = {179, 380,  400, 450, 485, 500, 565, 590, 625, 780, 900, 1058 };
     correctedSpectrum = { 50, 70, 20, 30, 40, 10, 15, 1, 80, 50, 11, 15 };
     switch (ui.filter->currentIndex())
@@ -74,14 +74,58 @@ void MainWindow::readCorrectedSpectrum()
     double ppfd{ m_spectrumProcessor->PARsum(calibratedSpectrum, 400.069 ,699.978) };
 
     ui.textBrowser->append("<b style='color: green'> Corrected Spectrum read</b>");
-    ui.textBrowser->append("<b style='color: red'> integration time should be set to: </b>" + QString::number(m_spectrometr->detectIntegrationTime()));
+    ui.textBrowser->append("<b style='color: red'> integration time should be set to: </b>" + QString::number(m_spectrometer->detectIntegrationTime()));
     ui.textBrowser->append("<b style='color: orange'> PFD: </b>" + QString::number(pfd));
     ui.textBrowser->append("<b style='color: orange'> PPFD: </b>" + QString::number(ppfd));
 }
+void MainWindow::integrationTimeAutoSelect()
+{
+    ui.integrationTimeValue->setReadOnly(true);
+    ui.averageValue->setReadOnly(true);
+    ui.readDark_button->setEnabled(false);
+    ui.readCorrectedSpectrum_button->setEnabled(false);
 
+    const unsigned int neededAverage{ static_cast<unsigned int> (ui.averageValue->value()) };
+    m_spectrometer->setAverageFactor(1);
+    unsigned long currIntegrationTime{ 0 };
+
+    //There should be check for non empty dark spectrum
+    unsigned long newIntegrationTime{ 0 };
+    do
+    {
+        currIntegrationTime = ui.integrationTimeValue->value();
+        m_spectrometer->readCorrectedSpectrum();
+        newIntegrationTime = m_spectrometer->detectIntegrationTime();
+        ui.integrationTimeValue->setValue(newIntegrationTime);
+        changeIntegrationTime();
+        //m_spectrometer->setIntegrationTime(newIntegrationTime); // change to MainWindow changeIntegrationTime() function!
+        //updating UI to see difference 
+        
+        
+    } while (newIntegrationTime != currIntegrationTime);
+    //doing the same but for current average factor
+    m_spectrometer->setAverageFactor(neededAverage);
+    do
+    {
+        currIntegrationTime = ui.integrationTimeValue->value();
+        m_spectrometer->readCorrectedSpectrum();
+        newIntegrationTime = m_spectrometer->detectIntegrationTime();
+        ui.integrationTimeValue->setValue(newIntegrationTime);
+        changeIntegrationTime();
+        //m_spectrometer->setIntegrationTime(newIntegrationTime);
+        //updating UI to see difference
+        
+        
+    } while (newIntegrationTime != currIntegrationTime);
+
+    ui.readCorrectedSpectrum_button->setEnabled(true);
+    ui.readDark_button->setEnabled(true);
+    ui.averageValue->setReadOnly(false);
+    ui.integrationTimeValue->setReadOnly(false);
+}
 void MainWindow::changeAverage()
 {
-    m_spectrometr->setAverageFactor(ui.averageValue->value());
+    m_spectrometer->setAverageFactor(ui.averageValue->value());
     //ui.textBrowser->append("Min integration time: " + QString::number(m_spectrometr->getMinIntegrationTime()));
     //ui.textBrowser->append("Max integration time: " + QString::number(m_spectrometr->getMaxIntegrationTime()));
     //ui.textBrowser->append("Current integration time: " + QString::number(m_spectrometr->getIntegrationTime()));
@@ -89,7 +133,7 @@ void MainWindow::changeAverage()
 }
 void MainWindow::changeIntegrationTime()
 {
-    m_spectrometr->setIntegrationTime(ui.integrationTimeValue->value());
+    m_spectrometer->setIntegrationTime(ui.integrationTimeValue->value());
     //ui.textBrowser->append("Integration time now is: " + QString::number(ui.integrationTimeValue->value()));
 }
 
@@ -112,8 +156,8 @@ void MainWindow::saveAs()
         //return
     }
 
-    auto nm{ m_spectrometr->getLastWavelengths()};
-    auto spectrum{ m_spectrometr->getLastSpectrum()};
+    auto nm{ m_spectrometer->getLastWavelengths()};
+    auto spectrum{ m_spectrometer->getLastSpectrum()};
     
     std::size_t s{ nm.size() };
 
@@ -139,8 +183,8 @@ void MainWindow::saveAsRelative()
     {
         //return
     }
-    auto nm{ m_spectrometr->getLastWavelengths() };
-    auto spectrum{ m_spectrometr->getLastSpectrum() };
+    auto nm{ m_spectrometer->getLastWavelengths() };
+    auto spectrum{ m_spectrometer->getLastSpectrum() };
     //auto relativeSpectrum{ m_spectrumProcessor->toRelative(m_spectrometr->getLastSpectrum()) };
     auto relativeSpectrum{ m_spectrumProcessor->toRelative(spectrum) };
     std::size_t s{ nm.size() };
