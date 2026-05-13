@@ -182,6 +182,10 @@ int Spectrometer::init()
 	odapi_set_integration_time_micros(m_deviceIds[0], &m_errorCode, m_integrationTimeMicroseconds);
 	odapi_set_scans_to_average(m_deviceIds[0], &m_errorCode, m_averageFactor);
 
+	int darkPixelCount{ odapi_get_electric_dark_pixel_count(m_deviceIds[0], &m_errorCode) };
+
+	odapi_get_electric_dark_pixel_indices(m_deviceIds[0], &m_errorCode, m_darkPixelIndices.data(), darkPixelCount);
+
 	m_init = true;
 	return 1;
 }
@@ -225,7 +229,7 @@ std::vector<double> Spectrometer::readCalibDarkSpectrum()
 	}
 
 	const unsigned long oldIntegrationTime{ m_integrationTimeMicroseconds };
-	setIntegrationTime(1000000);
+	setIntegrationTime(1000000ul);
 	m_calibDarkSpectrum.resize(m_pixelCount);
 	odapi_get_formatted_spectrum(m_deviceIds[0], &m_errorCode, m_calibDarkSpectrum.data(), m_pixelCount);
 
@@ -238,29 +242,29 @@ std::vector<double> Spectrometer::readCalibDarkSpectrum()
 }
 std::vector<double> Spectrometer::calcPureDark()
 {
-	if (m_calibDarkSpectrum.empty() || m_biasDarkSpectrum.empty())
+	if (m_calibDarkSpectrum.empty() || m_darkPixelIndices.empty())
 	{
 		return {};
 	}
 
+	double biasSum = 0.0;
+	for (int index : m_darkPixelIndices) {
+		biasSum += m_calibDarkSpectrum[index];
+	}
+	double currentBias = biasSum / m_darkPixelIndices.size();
 	
-
-	const double t_min = static_cast<double>(getMinIntegrationTime());
-	const double t_calib = 1000000.0; 
-	const double timeDelta = t_calib - t_min;
-
-	
-	if (timeDelta <= 0.0) 
-		return {};
-
+	m_biasDarkSpectrum.resize(m_pixelCount);
 	m_pureDarkSpectrum.resize(m_pixelCount);
+
+	const double t_calib = 1000000.0; 
+	
 	for (std::size_t i = 0; i < m_pixelCount; ++i)
 	{
 		
-		double totalDarkNoise = m_calibDarkSpectrum[i] - m_biasDarkSpectrum[i];
+		double totalDarkNoise = m_calibDarkSpectrum[i] - currentBias;
 
-		
-		m_pureDarkSpectrum[i] = totalDarkNoise / timeDelta;
+		m_biasDarkSpectrum[i] = m_calibDarkSpectrum[i] - totalDarkNoise;
+		m_pureDarkSpectrum[i] = totalDarkNoise / t_calib;
 	}
 	return m_pureDarkSpectrum;
 }

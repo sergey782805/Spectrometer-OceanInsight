@@ -42,9 +42,10 @@ private:
 	std::vector<double> m_biasDarkSpectrum;
 	std::vector<double> m_calibDarkSpectrum;
 	std::vector<double> m_pureDarkSpectrum;
-	std::vector<double> m_darkSpectrum; // pure dark
+	std::vector<double> m_darkSpectrum; // final dark
 	std::vector<double> m_correctedSpectrum;
 	std::vector<long> m_deviceIds;
+	std::vector<int> m_darkPixelIndices;
 	unsigned long m_integrationTimeMicroseconds;
 	unsigned long m_darkIntegrationTimeMicroseconds;
 	int m_errorCode;

@@ -38,8 +38,8 @@ void MainWindow::readDark()
 {
     //std::vector<double> wavelengths = m_spectrometer->readWaveLengths();
     //std::vector<double> darkSpectrum = m_spectrometer->readDarkSpectrum();
-    m_spectrometer->readBiasDarkSpectrum();
-    ui.textBrowser->append("<b style='color: green'>  BIAS Dark Spectrum read</b>");
+    //m_spectrometer->readBiasDarkSpectrum();
+    //ui.textBrowser->append("<b style='color: green'>  BIAS Dark Spectrum read</b>");
     m_spectrometer->readCalibDarkSpectrum();
     ui.textBrowser->append("<b style='color: green'>  CALIB Dark Spectrum read</b>");
     //std::vector<double> darkRelative = m_spectrumProcessor->toRelative(darkSpectrum);
@@ -94,7 +94,6 @@ void MainWindow::changeAverage()
 void MainWindow::changeIntegrationTime()
 {
 
-	const unsigned long minIntegrationTime{ m_spectrometer->getMinIntegrationTime()};
 	const unsigned long newIntegrationTime{ static_cast<unsigned long> (ui.integrationTimeValue->value())};
     
     const std::vector<double> biasDarkSpectrum{ m_spectrometer->getBiasDarkSpectrum() };
@@ -103,7 +102,7 @@ void MainWindow::changeIntegrationTime()
     if (!biasDarkSpectrum.empty() && !pureDarkSpectrum.empty())
     {
        
-        const std::vector<double> adjustedDarkSpectrum{ m_spectrumProcessor->adjustDarkSpectrum(biasDarkSpectrum, pureDarkSpectrum, minIntegrationTime, newIntegrationTime) };
+        const std::vector<double> adjustedDarkSpectrum{ m_spectrumProcessor->adjustDarkSpectrum(biasDarkSpectrum, pureDarkSpectrum, 0, newIntegrationTime) };
 
         m_spectrometer->setDarkSpectrum(adjustedDarkSpectrum);
 

@@ -90,25 +90,25 @@ std::vector <double>SpectrumProcessor::savitzkyGolayFilter9(const std::vector<do
 
 std::vector<double> SpectrumProcessor::adjustDarkSpectrum(const std::vector<double>& biasDarkSpectrum, const std::vector<double>& pureDarkSpectrum,const unsigned long minTime, const unsigned long targetTime)
 {
-	// Защита от пустых данных
+	
 	if (biasDarkSpectrum.empty() || pureDarkSpectrum.empty())
 	{
-		return biasDarkSpectrum; // если калибровки нет, вернем хотя бы базовый Bias
+		return biasDarkSpectrum; 
 	}
 
 	std::vector<double> adjustedDarkSpectrum(biasDarkSpectrum.size());
 
-	// Сколько микросекунд прибор реально копит тепловой шум
+	
 	double currentNoiseTime = 0.0;
 	if (targetTime > minTime)
 	{
 		currentNoiseTime = static_cast<double>(targetTime - minTime);
 	}
 
-	// Собираем итоговый спектр для SDK
+	
 	for (std::size_t i = 0; i < biasDarkSpectrum.size(); ++i)
 	{
-		// Итоговый пиксель = Постоянный Bias + (Шум_за_1_мкс * Время_накопления)
+		
 		adjustedDarkSpectrum[i] = biasDarkSpectrum[i] + (pureDarkSpectrum[i] * currentNoiseTime);
 	}
 
