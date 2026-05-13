@@ -16,8 +16,10 @@ public:
 	const std::vector<double> getLastWavelengths(); 
 	const std::vector<double> getLastSpectrum();
 	const unsigned long getIntegrationTime();
+	const unsigned long getDarkIntegrationTime();
 	const unsigned long getMaxIntegrationTime();
 	const unsigned long getMinIntegrationTime();
+	std::vector<double> getDarkSpectrum();
 	const unsigned long detectIntegrationTime();
 	const bool isReady();
 	std::vector<double> readWaveLengths();
@@ -26,6 +28,8 @@ public:
 	std::size_t getIndexOfWavelenght(double wavelength);
 	void setIntegrationTime(const unsigned long ms); // ??
 	void setAverageFactor(const unsigned int average); //?
+	void setDarkSpectrum(const std::vector<double>& darkSpectrum);
+	void setDarkIntegrationTime(const unsigned long newTime);
 	
 private:
 	std::vector<double> m_wavelengths;
@@ -33,6 +37,7 @@ private:
 	std::vector<double> m_correctedSpectrum;
 	std::vector<long> m_deviceIds;
 	unsigned long m_integrationTimeMicroseconds;
+	unsigned long m_darkIntegrationTimeMicroseconds;
 	int m_errorCode;
 	int m_pixelCount;
 	unsigned int m_averageFactor;

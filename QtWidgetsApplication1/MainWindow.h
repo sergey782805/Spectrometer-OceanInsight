@@ -27,7 +27,7 @@ private:
     Ui::MainWindow ui;
     
     GraphModel* m_model;
-    Spectrometer* m_spectrometr;
+    Spectrometer* m_spectrometer;
     SpectrumProcessor* m_spectrumProcessor;
     
     void readDark();

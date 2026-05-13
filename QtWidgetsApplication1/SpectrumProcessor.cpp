@@ -87,6 +87,23 @@ std::vector <double>SpectrumProcessor::savitzkyGolayFilter9(const std::vector<do
 	return filteredSpectrum;
 }
 
+
+std::vector<double> SpectrumProcessor::adjustDarkSpectrum(const std::vector<double>& darkSpectrum,const unsigned long oldTime, const unsigned long newTime)
+{
+	if (oldTime == 0) 
+		return darkSpectrum;
+
+	const double coefficient{ static_cast<double> (newTime) / oldTime };
+
+	std::vector<double> adjustedDarkSpectrum{ darkSpectrum };
+
+	for (auto& value : adjustedDarkSpectrum)
+	{
+		value *= coefficient;
+	}
+	return adjustedDarkSpectrum;
+}
+
 std::vector<double> SpectrumProcessor::toRelative(const std::vector<double>& spectrum)
 {
 	if (spectrum.empty())
