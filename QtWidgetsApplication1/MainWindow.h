@@ -11,6 +11,7 @@
 #include <qfiledialog.h>
 #include <qstandardpaths.h>
 #include <qqml.h>
+#include <qthread.h>
 
 #include "ui_MainWindow.h"
 
