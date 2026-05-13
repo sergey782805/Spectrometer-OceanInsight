@@ -70,6 +70,14 @@ const unsigned long Spectrometer::getMinIntegrationTime()
 	}
 	return 0;
 }
+std::vector<double> Spectrometer::getBiasDarkSpectrum()
+{
+	return m_biasDarkSpectrum;
+}
+std::vector<double> Spectrometer::getPureDarkSpectrum()
+{
+	return m_pureDarkSpectrum;
+}
 std::vector<double> Spectrometer::getDarkSpectrum()
 {
 	if(isReady())
@@ -190,6 +198,72 @@ std::vector<double> Spectrometer::readWaveLengths()
 	return m_wavelengths;
 	
 }
+std::vector<double> Spectrometer::readBiasDarkSpectrum()
+{
+	if (!isReady())
+	{
+		return {};
+	}
+
+	const unsigned long oldIntegrationTime{ m_integrationTimeMicroseconds };
+	setIntegrationTime( getMinIntegrationTime());
+	m_biasDarkSpectrum.resize(m_pixelCount);
+	odapi_get_formatted_spectrum(m_deviceIds[0], &m_errorCode, m_biasDarkSpectrum.data(), m_pixelCount);
+
+	setIntegrationTime (oldIntegrationTime);
+
+	calcPureDark();
+
+
+	return m_biasDarkSpectrum;
+}
+std::vector<double> Spectrometer::readCalibDarkSpectrum() 
+{
+	if (!isReady())
+	{
+		return {};
+	}
+
+	const unsigned long oldIntegrationTime{ m_integrationTimeMicroseconds };
+	setIntegrationTime(1000000);
+	m_calibDarkSpectrum.resize(m_pixelCount);
+	odapi_get_formatted_spectrum(m_deviceIds[0], &m_errorCode, m_calibDarkSpectrum.data(), m_pixelCount);
+
+	setIntegrationTime( oldIntegrationTime);
+
+	calcPureDark();
+
+
+	return m_calibDarkSpectrum;
+}
+std::vector<double> Spectrometer::calcPureDark()
+{
+	if (m_calibDarkSpectrum.empty() || m_biasDarkSpectrum.empty())
+	{
+		return {};
+	}
+
+	
+
+	const double t_min = static_cast<double>(getMinIntegrationTime());
+	const double t_calib = 1000000.0; 
+	const double timeDelta = t_calib - t_min;
+
+	
+	if (timeDelta <= 0.0) 
+		return {};
+
+	m_pureDarkSpectrum.resize(m_pixelCount);
+	for (std::size_t i = 0; i < m_pixelCount; ++i)
+	{
+		
+		double totalDarkNoise = m_calibDarkSpectrum[i] - m_biasDarkSpectrum[i];
+
+		
+		m_pureDarkSpectrum[i] = totalDarkNoise / timeDelta;
+	}
+	return m_pureDarkSpectrum;
+}
 std::vector<double> Spectrometer::readDarkSpectrum()
 {
 	if (!isReady())
@@ -215,6 +289,11 @@ std::vector<double> Spectrometer::readCorrectedSpectrum()
 	//std::vector<double> correctedSpectrum(m_pixelCount);
 	m_correctedSpectrum.resize(m_pixelCount);
 	
+	if (m_darkSpectrum.empty())
+	{
+		m_darkSpectrum.assign(m_pixelCount, 0.0);
+	}
+
 	//odapi_set_scans_to_average(m_deviceIds[0], &m_errorCode, m_averageFactor);
 	//odapi_set_integration_time_micros(m_deviceIds[0], &m_errorCode, m_integrationTimeMicroseconds);
 	odapi_get_nonlinearity_corrected_spectrum1(
