@@ -11,7 +11,7 @@
 #include <qfiledialog.h>
 #include <qstandardpaths.h>
 #include <qqml.h>
-
+#include <qthread.h>
 #include "ui_MainWindow.h"
 
 class MainWindow : public QMainWindow
@@ -32,6 +32,7 @@ private:
     
     void readDark();
     void readCorrectedSpectrum();
+    void integrationTimeAutoSelect();
     void changeAverage();
     void changeIntegrationTime();
     void saveAs();

@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui.actionSave_As, &QAction::triggered, this, &MainWindow::saveAs);
     QObject::connect(ui.actionSave_As_Relative, &QAction::triggered, this, &MainWindow::saveAsRelative);
     QObject::connect(ui.actionOpen_calibration_file, &QAction::triggered, this, &MainWindow::openCalibration);
+    QObject::connect(ui.autoIntegrationTIme, &QPushButton::clicked, this, &MainWindow::integrationTimeAutoSelect);
     resize(800, 600);
 }
 MainWindow::~MainWindow()
@@ -55,8 +56,8 @@ void MainWindow::readCorrectedSpectrum()
 {
     std::vector<double> wavelengths = m_spectrometer->readWaveLengths();
     std::vector<double> correctedSpectrum = m_spectrometer->readCorrectedSpectrum();
-    wavelengths = {179, 380,  400, 450, 485, 500, 565, 590, 625, 780, 900, 1058 };
-    correctedSpectrum = { 50, 70, 20, 30, 40, 10, 15, 1, 80, 50, 11, 15 };
+    //wavelengths = {179, 380,  400, 450, 485, 500, 565, 590, 625, 780, 900, 1058 };
+    //correctedSpectrum = { 50, 70, 20, 30, 40, 10, 15, 1, 80, 50, 11, 15 };
     switch (ui.filter->currentIndex())
     {
     case 1: // savitzkyGolayFilter9
@@ -82,7 +83,90 @@ void MainWindow::readCorrectedSpectrum()
     ui.textBrowser->append("<b style='color: orange'> PFD: </b>" + QString::number(pfd));
     ui.textBrowser->append("<b style='color: orange'> PPFD: </b>" + QString::number(ppfd));
 }
+void MainWindow::integrationTimeAutoSelect()
+{
+    ui.integrationTimeValue->setReadOnly(true);
+    ui.averageValue->setReadOnly(true);
+    ui.readDark_button->setEnabled(false);
+    ui.readCorrectedSpectrum_button->setEnabled(false);
 
+    const unsigned int neededAverage{ static_cast<unsigned int> (ui.averageValue->value()) };
+    m_spectrometer->setAverageFactor(1);
+    unsigned long startIntegrationTime{ static_cast<unsigned long> (ui.integrationTimeValue->value()) };
+    //There should be check for non empty dark spectrum
+
+    if (!m_spectrometer->getDarkSpectrum().empty())
+    {
+
+        QThread* thread = QThread::create([this, neededAverage, startIntegrationTime]() {
+            unsigned long currIntegrationTime = startIntegrationTime;
+            unsigned long newIntegrationTime{ 0 };
+            do
+            {
+
+
+                m_spectrometer->readCorrectedSpectrum();
+                newIntegrationTime = m_spectrometer->detectIntegrationTime();
+                QMetaObject::invokeMethod(this, [this, newIntegrationTime]() {
+
+                    ui.integrationTimeValue->setValue(newIntegrationTime);
+                    changeIntegrationTime(); 
+                    }, Qt::QueuedConnection);
+
+                if (newIntegrationTime == currIntegrationTime)
+                {
+                    break;
+                }
+                currIntegrationTime = newIntegrationTime;
+                QThread::msleep(20);
+                //ui.integrationTimeValue->setValue(newIntegrationTime);
+                //changeIntegrationTime();
+                //m_spectrometer->setIntegrationTime(newIntegrationTime); // change to MainWindow changeIntegrationTime() function!
+                //updating UI to see difference 
+
+
+            } while (true);
+            //doing the same but for current average factor
+            m_spectrometer->setAverageFactor(neededAverage);
+            do
+            {
+
+                m_spectrometer->readCorrectedSpectrum();
+                newIntegrationTime = m_spectrometer->detectIntegrationTime();
+                QMetaObject::invokeMethod(this, [this, newIntegrationTime]() {
+                    ui.integrationTimeValue->setValue(newIntegrationTime);
+                    changeIntegrationTime(); 
+                    }, Qt::QueuedConnection);
+
+                if (newIntegrationTime == currIntegrationTime)
+                {
+                    break;
+                }
+                currIntegrationTime = newIntegrationTime;
+                QThread::msleep(20);
+                //ui.integrationTimeValue->setValue(newIntegrationTime);
+                //changeIntegrationTime();
+                //m_spectrometer->setIntegrationTime(newIntegrationTime);
+                //updating UI to see difference
+
+
+            } while (true);
+
+            });
+
+
+        QObject::connect(thread, &QThread::finished, this, [this]()
+            {
+                ui.readCorrectedSpectrum_button->setEnabled(true);
+                ui.readDark_button->setEnabled(true);
+                ui.averageValue->setReadOnly(false);
+                ui.integrationTimeValue->setReadOnly(false);
+            });
+        QObject::connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+
+        thread->start();
+    }
+}
 void MainWindow::changeAverage()
 {
     m_spectrometer->setAverageFactor(ui.averageValue->value());
