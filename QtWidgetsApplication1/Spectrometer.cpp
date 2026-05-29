@@ -82,6 +82,7 @@ std::vector<double> Spectrometer::getDarkSpectrum()
 {
 	if(isReady())
 		return m_darkSpectrum;
+	return {};
 }
 const unsigned long Spectrometer::detectIntegrationTime()
 {
