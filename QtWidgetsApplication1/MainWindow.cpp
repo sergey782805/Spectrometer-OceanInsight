@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui.actionSave_As_Relative, &QAction::triggered, this, &MainWindow::saveAsRelative);
     QObject::connect(ui.actionOpen_calibration_file, &QAction::triggered, this, &MainWindow::openCalibration);
     QObject::connect(ui.autoIntegrationTIme, &QPushButton::clicked, this, &MainWindow::integrationTimeAutoSelect);
+    QObject::connect(ui.filter, &QComboBox::currentIndexChanged, this, &MainWindow::updateGraphOnFilterChange);
     resize(800, 600);
 }
 MainWindow::~MainWindow()
@@ -56,8 +57,8 @@ void MainWindow::readCorrectedSpectrum()
 {
     std::vector<double> wavelengths = m_spectrometer->readWaveLengths();
     std::vector<double> correctedSpectrum = m_spectrometer->readCorrectedSpectrum();
-    //wavelengths = {179, 380,  400, 450, 485, 500, 565, 590, 625, 780, 900, 1058 };
-    //correctedSpectrum = { 50, 70, 20, 30, 40, 10, 15, 1, 80, 50, 11, 15 };
+    wavelengths = {179, 380,  400, 450, 485, 500, 565, 590, 625, 780, 900, 1058 };
+    correctedSpectrum = { 50, 70, 20, 30, 40, 10, 15, 1, 80, 50, 11, 15 };
     switch (ui.filter->currentIndex())
     {
     case 1: // savitzkyGolayFilter9
@@ -85,6 +86,9 @@ void MainWindow::readCorrectedSpectrum()
 }
 void MainWindow::integrationTimeAutoSelect()
 {
+    if(!m_spectrometer->isReady())
+        return
+
     ui.integrationTimeValue->setReadOnly(true);
     ui.averageValue->setReadOnly(true);
     ui.readDark_button->setEnabled(false);
@@ -166,6 +170,25 @@ void MainWindow::integrationTimeAutoSelect()
 
         thread->start();
     }
+}
+void MainWindow::updateGraphOnFilterChange()
+{
+    std::vector<double> wavelengths{ m_spectrometer->getLastWavelengths() };
+    std::vector<double> lastSpectrum{ m_spectrometer->getLastSpectrum() };
+
+    switch (ui.filter->currentIndex())
+    {
+    case 1: // savitzkyGolayFilter9
+        lastSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(lastSpectrum);
+        break;
+    default: // 0, no filter
+        break;
+    }
+    std::vector<double> relativeSpectrum{ m_spectrumProcessor->toRelative(lastSpectrum) };
+
+    QList<QPointF> data = m_spectrumProcessor->toQList(wavelengths, relativeSpectrum);
+    m_model->setData(data);
+
 }
 void MainWindow::changeAverage()
 {

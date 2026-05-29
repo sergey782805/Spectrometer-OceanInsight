@@ -33,6 +33,7 @@ private:
     void readDark();
     void readCorrectedSpectrum();
     void integrationTimeAutoSelect();
+    void updateGraphOnFilterChange();
     void changeAverage();
     void changeIntegrationTime();
     void saveAs();
