@@ -62,7 +62,7 @@ void MainWindow::readCorrectedSpectrum()
     switch (ui.filter->currentIndex())
     {
     case 1: // savitzkyGolayFilter9
-        correctedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(correctedSpectrum);
+        correctedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(correctedSpectrum, 9);
         break;
     default: // no filter
 
@@ -179,7 +179,7 @@ void MainWindow::updateGraphOnFilterChange()
     switch (ui.filter->currentIndex())
     {
     case 1: // savitzkyGolayFilter9
-        lastSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(lastSpectrum);
+        lastSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(lastSpectrum, 9);
         break;
     default: // 0, no filter
         break;

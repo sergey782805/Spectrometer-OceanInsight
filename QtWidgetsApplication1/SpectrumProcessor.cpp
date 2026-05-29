@@ -33,15 +33,53 @@ QList<QPointF> SpectrumProcessor::toQList(const std::vector<double>& wavelengths
 	return list;
 }
 
-std::vector <double>SpectrumProcessor::savitzkyGolayFilter9(const std::vector<double>& spectrum)
+std::vector <double>SpectrumProcessor::savitzkyGolayFilter9(const std::vector<double>& spectrum, const int windowSize)
 {
-	const std::vector<double> coefficients{ -21.0, 14.0, 39.0, 54.0, 59.0, 54.0, 39.0, 14.0, -21.0 };
+	std::vector<double> coefficients{};
+	double normalization{};
+	switch (windowSize)
+	{
+	case 9:
+		coefficients = { -21.0, 14.0, 39.0, 54.0, 59.0, 54.0, 39.0, 14.0, -21.0 };
+		normalization = 231.0;
+		break;
+	case 11:
+		coefficients = { -36, 9, 44, 69, 84, 89, 84, 69, 44, 9, -36 };
+		normalization = 429.0;
+	case 13:
+		coefficients = { -11, 0, 9, 16, 21, 24, 25, 24, 21, 16, 9, 0, -11 };
+		normalization = 143.0;
+	case 15:
+		coefficients = { -78, -13, 42, 87, 122, 147, 162, 167, 162, 147, 122, 87, 42, -13, -78 };
+		normalization = 1105.0;
+	case 17:
+		coefficients = { -21, -6, 7, 18, 27, 34, 39, 42, 43, 42, 39, 34, 27, 18, 7, -6, -21 };
+		normalization = 323.0;
+	case 19:
+		coefficients = { -136, -51, 24, 89, 144, 189, 224, 249, 264, 269, 264, 249, 224, 189, 144, 89, 24, -51, -136 };
+		normalization = 2261.0;
+	case 21:
+		coefficients = { -171, -76, 9, 84, 149, 204, 249, 284, 309, 324, 329, 324, 309, 284, 249, 204, 149, 84, 9, -76, -171 };
+		normalization = 3059.0;
+	case 23:
+		coefficients = { -42, -21, -2, 15, 30, 43, 54, 63, 70, 75, 78, 79, 78, 75, 70, 63, 54, 43, 30, 15, -2, -21, -42 };
+		normalization = 805.0;
+	case 25: 
+		coefficients = { -253, -138, -33, 62, 147, 222, 287, 342, 387, 422, 447, 462, 467, 462, 447, 422, 387, 342, 287, 222, 147, 62, -33, -138, -253 };
+		normalization = 5175.0;
+	default:
+		break;
+	}
+
+
+
+	//const std::vector<double> coefficients{ -21.0, 14.0, 39.0, 54.0, 59.0, 54.0, 39.0, 14.0, -21.0 };
 	//
 	if (spectrum.size() < coefficients.size())
 	{
 		return {};
 	}
-	const double normalisation{ 231.0 };
+	//const double normalisation{ 231.0 };
 	std::vector<double> filteredSpectrum(spectrum.size());
 
 	std::size_t size{ spectrum.size() };
@@ -52,7 +90,7 @@ std::vector <double>SpectrumProcessor::savitzkyGolayFilter9(const std::vector<do
 		double newY{0};
 		for (int k{ min }; k <= max; ++k)
 		{
-			double C{ coefficients[k + max] / normalisation };
+			double C{ coefficients[k + max] / normalization };
 			double Y{ 0 };
 
 			if (i + k < 0)

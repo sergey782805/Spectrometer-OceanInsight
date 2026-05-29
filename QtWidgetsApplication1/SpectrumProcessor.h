@@ -10,7 +10,7 @@ public:
 	~SpectrumProcessor();
 	
 	QList<QPointF> toQList(const std::vector<double>& wavelengths, const std::vector<double>& spectrum);
-	std::vector <double> savitzkyGolayFilter9(const std::vector<double>& spectrum);
+	std::vector <double> savitzkyGolayFilter9(const std::vector<double>& spectrum, const int windowSize);
 	std::vector<double> toRelative(const std::vector<double>& spectrum);
 	std::vector<double> adjustDarkSpectrum(const std::vector<double>& biasDarkSpectrum, const std::vector<double>& darkSpectrum,const unsigned long minTime, const unsigned long targetTime);
 	double PARsum(const std::vector<double>& calibratedSpectrum, const double lo, const double hi);
