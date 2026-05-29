@@ -57,12 +57,58 @@ void MainWindow::readCorrectedSpectrum()
 {
     std::vector<double> wavelengths = m_spectrometer->readWaveLengths();
     std::vector<double> correctedSpectrum = m_spectrometer->readCorrectedSpectrum();
-    wavelengths = {179, 380,  400, 450, 485, 500, 565, 590, 625, 780, 900, 1058 };
-    correctedSpectrum = { 50, 70, 20, 30, 40, 10, 15, 1, 80, 50, 11, 15 };
+    wavelengths = {
+    179.0, 187.9, 196.8, 205.7, 214.5, 223.4, 232.3, 241.2, 250.1, 258.9,
+    267.8, 276.7, 285.6, 294.5, 303.3, 312.2, 321.1, 330.0, 338.9, 347.7,
+    356.6, 365.5, 374.4, 383.3, 392.1, 401.0, 409.9, 418.8, 427.7, 436.5,
+    445.4, 454.3, 463.2, 472.1, 481.0, 489.8, 498.7, 507.6, 516.5, 525.4,
+    534.2, 543.1, 552.0, 560.9, 569.8, 578.6, 587.5, 596.4, 605.3, 614.2,
+    623.0, 631.9, 640.8, 649.7, 658.6, 667.5, 676.3, 685.2, 694.1, 703.0,
+    711.9, 720.7, 729.6, 738.5, 747.4, 756.3, 765.1, 774.0, 782.9, 791.8,
+    800.7, 809.5, 818.4, 827.3, 836.2, 845.1, 853.9, 862.8, 871.7, 880.6,
+    889.5, 898.4, 907.2, 916.1, 925.0, 933.9, 942.8, 951.6, 960.5, 969.4,
+    978.3, 987.2, 996.0, 1004.9, 1013.8, 1022.7, 1031.6, 1040.4, 1049.3, 1058.0
+    };
+    correctedSpectrum = {
+        49.6, 51.3, 50.2, 48.7, 52.1, 50.4, 47.9, 45.2, 43.8, 41.1,
+        38.4, 35.6, 31.9, 29.4, 27.2, 23.9, 21.5, 20.8, 22.3, 24.1,
+        27.6, 30.2, 33.4, 34.9, 36.1, 34.8, 32.1, 30.5, 27.9, 23.4,
+        21.1, 18.4, 15.2, 13.9, 11.2, 12.4, 14.1, 15.6, 17.2, 16.1,
+        14.8, 12.3, 10.5, 8.2, 6.4, 4.9, 3.1, 2.4, 4.8, 8.9,
+        15.4, 25.1, 38.6, 52.4, 67.9, 78.2, 82.4, 80.1, 73.4, 62.9,
+        51.2, 42.6, 35.1, 31.4, 29.8, 30.6, 34.2, 39.1, 45.4, 51.9,
+        53.2, 51.7, 46.4, 39.2, 31.1, 24.6, 19.4, 15.2, 12.9, 11.4,
+        10.8, 11.5, 12.2, 13.4, 14.9, 15.3, 16.2, 15.8, 14.1, 14.9,
+        15.2, 16.4, 15.1, 14.3, 15.9, 14.8, 13.9, 15.2, 14.4, 15.1
+    };
     switch (ui.filter->currentIndex())
     {
     case 1: // savitzkyGolayFilter9
         correctedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(correctedSpectrum, 9);
+        break;
+    case 2: // savitzkyGolayFilter9
+        correctedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(correctedSpectrum, 11);
+        break;
+    case 3: // savitzkyGolayFilter9
+        correctedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(correctedSpectrum, 13);
+        break;
+    case 4: // savitzkyGolayFilter9
+        correctedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(correctedSpectrum, 15);
+        break;
+    case 5: // savitzkyGolayFilter9
+        correctedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(correctedSpectrum, 17);
+        break;
+    case 6: // savitzkyGolayFilter9
+        correctedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(correctedSpectrum, 19);
+        break;
+    case 7: // savitzkyGolayFilter9
+        correctedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(correctedSpectrum, 21);
+        break;
+    case 8: // savitzkyGolayFilter9
+        correctedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(correctedSpectrum, 23);
+        break;
+    case 9: // savitzkyGolayFilter9
+        correctedSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(correctedSpectrum, 25);
         break;
     default: // no filter
 
@@ -180,6 +226,30 @@ void MainWindow::updateGraphOnFilterChange()
     {
     case 1: // savitzkyGolayFilter9
         lastSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(lastSpectrum, 9);
+        break;
+    case 2: // savitzkyGolayFilter9
+        lastSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(lastSpectrum, 11);
+        break;
+    case 3: // savitzkyGolayFilter9
+        lastSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(lastSpectrum, 13);
+        break;
+    case 4: // savitzkyGolayFilter9
+        lastSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(lastSpectrum, 15);
+        break;
+    case 5: // savitzkyGolayFilter9
+        lastSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(lastSpectrum, 17);
+        break;
+    case 6: // savitzkyGolayFilter9
+        lastSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(lastSpectrum, 19);
+        break;
+    case 7: // savitzkyGolayFilter9
+        lastSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(lastSpectrum, 21);
+        break;
+    case 8: // savitzkyGolayFilter9
+        lastSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(lastSpectrum, 23);
+        break;
+    case 9: // savitzkyGolayFilter9
+        lastSpectrum = m_spectrumProcessor->savitzkyGolayFilter9(lastSpectrum, 25);
         break;
     default: // 0, no filter
         break;
