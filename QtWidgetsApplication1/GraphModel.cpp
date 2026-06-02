@@ -3,17 +3,23 @@
 #include <algorithm>
 #include <qdebug.h>
 
-GraphModel::GraphModel() : m_maxX {5.0}, m_maxY{1.0}
+GraphModel::GraphModel() : m_maxX {0.0}, m_maxY{1.0}
 {
-
-	//init();
-	
-
-	
-
 }
 GraphModel::~GraphModel()
 {
+}
+double GraphModel::getMaxX() const
+{
+	return m_maxX;
+}
+double GraphModel:: getMaxY() const
+{
+	return m_maxY;
+}
+Q_INVOKABLE QList<QPointF> GraphModel::getData() const
+{
+	return m_series;
 }
 void GraphModel::setMaxX(double x)
 {

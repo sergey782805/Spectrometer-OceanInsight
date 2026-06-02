@@ -19,27 +19,15 @@ public:
 	GraphModel();
 	~GraphModel();
 
-	double getMaxX()
-	{
-		return m_maxX;
-	}
-	double getMaxY()
-	{
-		return m_maxY;
-	}
-	
-	Q_INVOKABLE QList<QPointF> getData()
-	{
-		return m_series;
-	}
+	double getMaxX() const;
+	double getMaxY() const;
+	Q_INVOKABLE QList<QPointF> getData() const;
 
 public slots:
 	void setMaxX(double x);
 	void setMaxY(double y);
 	void setData(QList<QPointF> data);
 	
-	//void updateSeries();
-
 signals:
 	void maxXChanged(double newMaxX);
 	void maxYChanged(double newMaxY);
@@ -50,12 +38,6 @@ private:
 	double m_maxX;
 	double m_maxY;
 	
-	// Try QList<QVariant>
 	QList<QPointF> m_series;
-	
-	
-	//spectrometr parameters
-	
-	
 };
 
