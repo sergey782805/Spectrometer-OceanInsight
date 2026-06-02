@@ -121,7 +121,7 @@ void MainWindow::readCorrectedSpectrum()
     m_model->setData(data);
     
     std::vector<double> calibratedSpectrum{};
-    calibratedSpectrum = m_spectrumProcessor->calibrate(wavelengths, correctedSpectrum);
+    calibratedSpectrum = m_spectrumProcessor->calibrate(wavelengths, correctedSpectrum, ui.integrationTimeValue->value());
     double pfd{m_spectrumProcessor->PARsum(calibratedSpectrum, 350.0, 799.82)};
     ui.PFD->setValue(pfd);
     double ppfd{ m_spectrumProcessor->PARsum(calibratedSpectrum, 400.069 ,699.978) };

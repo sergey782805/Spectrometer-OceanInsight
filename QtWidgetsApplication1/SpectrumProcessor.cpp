@@ -161,11 +161,15 @@ double SpectrumProcessor::PARsum(const std::vector<double>& calibratedSpectrum, 
 
 	return sum;
 }
-std::vector<double> SpectrumProcessor::calibrate(const std::vector<double>& waveLengts, const std::vector<double>& spectrum)
+std::vector<double> SpectrumProcessor::calibrate(
+	const std::vector<double>& waveLengts, 
+	const std::vector<double>& spectrum, 
+	const unsigned long currentIntegrationTime)
 {
 	if (m_calibrationWavelengts.empty() || m_calibrationCoeff.empty() 
 		|| waveLengts.empty() || spectrum.empty()
-		|| m_calibrationCoeff.size() != m_calibrationWavelengts.size())
+		|| m_calibrationCoeff.size() != m_calibrationWavelengts.size()
+		|| currentIntegrationTime <= 0)
 		return {};
 
 	auto start{ std::lower_bound(waveLengts.begin(), waveLengts.end(), m_calibrationWavelengts.front()) };
@@ -179,15 +183,24 @@ std::vector<double> SpectrumProcessor::calibrate(const std::vector<double>& wave
 	
 	if (startIndex > endIndex)
 		return {};
+
+	if (m_calibrationIntegrationTime <= 0)
+		return {};
+
+	const double timeFactor{ static_cast<double>(currentIntegrationTime) / m_calibrationIntegrationTime };
 	std::vector<double> calibratedSpectrum;
 	double dLambda{ 1 };
 	calibratedSpectrum.reserve(endIndex - startIndex);
 	for(std::size_t i{1}, k{0}; i < m_calibrationCoeff.size(); ++i, ++k)
 	{
 		dLambda = m_calibrationWavelengts[i] - m_calibrationWavelengts[i - 1];
-		calibratedSpectrum.push_back(spectrum[startIndex + i - 1] * m_calibrationCoeff[i - 1] * dLambda);
+		double rawCounts = spectrum[startIndex + i - 1];
+		double normalizedCounts = rawCounts / timeFactor;
+		calibratedSpectrum.push_back(normalizedCounts * m_calibrationCoeff[i - 1] * dLambda);
 	}
-	calibratedSpectrum.push_back(spectrum[endIndex - 1] * m_calibrationCoeff.back() * dLambda);
+	double lastRawCounts = spectrum[endIndex - 1];
+	double lastNormalizedCounts = lastRawCounts / timeFactor;
+	calibratedSpectrum.push_back(lastNormalizedCounts * m_calibrationCoeff.back() * dLambda);
 	return calibratedSpectrum;
 }
 void SpectrumProcessor::setCalibrationWavelengts(const std::vector<double>& calibrationWavelengts)
