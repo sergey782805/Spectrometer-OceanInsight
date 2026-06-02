@@ -22,7 +22,7 @@ QList<QPointF> SpectrumProcessor::toQList(const std::vector<double>& wavelengths
 	}
 	return list;
 }
-std::vector <double>SpectrumProcessor::savitzkyGolayFilter9(const std::vector<double>& spectrum, const int windowSize)
+std::vector <double>SpectrumProcessor::savitzkyGolayFilter(const std::vector<double>& spectrum, const int windowSize)
 {
 	std::vector<double> coefficients{};
 	double normalization{};
@@ -35,27 +35,35 @@ std::vector <double>SpectrumProcessor::savitzkyGolayFilter9(const std::vector<do
 	case 11:
 		coefficients = { -36, 9, 44, 69, 84, 89, 84, 69, 44, 9, -36 };
 		normalization = 429.0;
+		break;
 	case 13:
 		coefficients = { -11, 0, 9, 16, 21, 24, 25, 24, 21, 16, 9, 0, -11 };
 		normalization = 143.0;
+		break;
 	case 15:
 		coefficients = { -78, -13, 42, 87, 122, 147, 162, 167, 162, 147, 122, 87, 42, -13, -78 };
 		normalization = 1105.0;
+		break;
 	case 17:
 		coefficients = { -21, -6, 7, 18, 27, 34, 39, 42, 43, 42, 39, 34, 27, 18, 7, -6, -21 };
 		normalization = 323.0;
+		break;
 	case 19:
 		coefficients = { -136, -51, 24, 89, 144, 189, 224, 249, 264, 269, 264, 249, 224, 189, 144, 89, 24, -51, -136 };
 		normalization = 2261.0;
+		break;
 	case 21:
 		coefficients = { -171, -76, 9, 84, 149, 204, 249, 284, 309, 324, 329, 324, 309, 284, 249, 204, 149, 84, 9, -76, -171 };
 		normalization = 3059.0;
+		break;
 	case 23:
 		coefficients = { -42, -21, -2, 15, 30, 43, 54, 63, 70, 75, 78, 79, 78, 75, 70, 63, 54, 43, 30, 15, -2, -21, -42 };
 		normalization = 805.0;
+		break;
 	case 25: 
 		coefficients = { -253, -138, -33, 62, 147, 222, 287, 342, 387, 422, 447, 462, 467, 462, 447, 422, 387, 342, 287, 222, 147, 62, -33, -138, -253 };
 		normalization = 5175.0;
+		break;
 	default:
 		break;
 	}
