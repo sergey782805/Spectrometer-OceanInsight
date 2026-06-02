@@ -13,29 +13,30 @@ public:
 	Spectrometer();
 	~Spectrometer();
 
-	const std::vector<double> getLastWavelengths(); 
-	const std::vector<double> getLastSpectrum();
-	const unsigned long getIntegrationTime();
-	const unsigned long getDarkIntegrationTime();
-	const unsigned long getMaxIntegrationTime();
-	const unsigned long getMinIntegrationTime();
-	std::vector<double> getBiasDarkSpectrum();
-	std::vector<double> getPureDarkSpectrum();
-	std::vector<double> getDarkSpectrum();
-	const unsigned long detectIntegrationTime();
-	const bool isReady();
-	std::vector<double> readWaveLengths();
-	std::vector<double> readBiasDarkSpectrum();
-	std::vector<double> readCalibDarkSpectrum();
-	std::vector<double> calcPureDark();
-	std::vector<double> readDarkSpectrum();
-	std::vector<double> readCorrectedSpectrum();
-	std::size_t getIndexOfWavelenght(double wavelength);
-	void setIntegrationTime(const unsigned long ms); // ??
-	void setAverageFactor(const unsigned int average); //?
-	
-	void setDarkSpectrum(const std::vector<double>& darkSpectrum);
-	void setDarkIntegrationTime(const unsigned long newTime);
+    bool isReady()const;
+
+    unsigned long getIntegrationTime();
+    unsigned long getMinIntegrationTime();
+    unsigned long getMaxIntegrationTime();
+    void setIntegrationTime(unsigned long ms);
+
+    void setAverageFactor(unsigned int average);
+
+    std::vector<double> getLastWavelengths() const;
+    std::vector<double> getLastSpectrum()const;
+    std::size_t getIndexOfWavelenght(double wavelength);
+
+    std::vector<double> getDarkSpectrum() const;
+    std::vector<double> getBiasDarkSpectrum() const;
+    std::vector<double> getPureDarkSpectrum() const;
+    void setDarkSpectrum(const std::vector<double>& darkSpectrum);
+
+    unsigned long detectIntegrationTime();
+    std::vector<double> readWaveLengths();
+    std::vector<double> readBiasDarkSpectrum();
+    std::vector<double> readCalibDarkSpectrum();
+    std::vector<double> readCorrectedSpectrum();
+    std::vector<double> calcPureDark();
 	
 private:
 	std::vector<double> m_wavelengths;
@@ -46,7 +47,6 @@ private:
 	std::vector<double> m_correctedSpectrum;
 	std::vector<long> m_deviceIds;
 	unsigned long m_integrationTimeMicroseconds;
-	unsigned long m_darkIntegrationTimeMicroseconds;
 	int m_errorCode;
 	int m_pixelCount;
 	unsigned int m_averageFactor;
