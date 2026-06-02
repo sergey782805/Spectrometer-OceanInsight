@@ -1,6 +1,7 @@
 #include "SpectrumProcessor.h"
 
-SpectrumProcessor::SpectrumProcessor()
+SpectrumProcessor::SpectrumProcessor() : m_calibrationWavelengts{}, m_calibrationCoeff{},
+m_calibrationIntegrationTime{ 0 }
 {
 }
 SpectrumProcessor::~SpectrumProcessor()
@@ -196,4 +197,8 @@ void SpectrumProcessor::setCalibrationWavelengts(const std::vector<double>& cali
 void SpectrumProcessor::setCalibrationCoeff(const std::vector<double>& calibrationCoeff)
 {
 	m_calibrationCoeff = calibrationCoeff;
+}
+void SpectrumProcessor::setCalibrationIntegrationTime(const unsigned long calibrationIntegrationTime)
+{
+	m_calibrationIntegrationTime = calibrationIntegrationTime;
 }

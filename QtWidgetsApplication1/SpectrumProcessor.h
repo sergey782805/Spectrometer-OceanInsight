@@ -18,9 +18,11 @@ public:
 
 	void setCalibrationWavelengts(const std::vector<double>& calibrationWavelengts);
 	void setCalibrationCoeff(const std::vector<double>& calibrationCoeff);
+	void setCalibrationIntegrationTime(const unsigned long calibrationIntegrationTime);
 private:
 	std::vector<double> m_calibrationWavelengts;
 	std::vector<double> m_calibrationCoeff;
+	unsigned long m_calibrationIntegrationTime;
 
 };
 

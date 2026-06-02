@@ -421,7 +421,7 @@ void MainWindow::openCalibration()
    
     m_spectrumProcessor->setCalibrationWavelengts(calibrationNm);
     m_spectrumProcessor->setCalibrationCoeff(calibrationCoeff);
-    //m_spectrumProcessor->setCalibrationIntegrationTime(calibrationIntegrationTime);
+    m_spectrumProcessor->setCalibrationIntegrationTime(calibrationIntegrationTime);
     
 
 }
