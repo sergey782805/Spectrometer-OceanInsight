@@ -365,28 +365,63 @@ void MainWindow::openCalibration()
     if (!openedFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         //return
+        return;
     }
     QTextStream in(&openedFile); // IN to our program
-
-    if(!in.atEnd())
-        QString line = in.readLine(); // first ROW (nm, Coefficient)
-    
-
+    unsigned long calibrationIntegrationTime{ 0 }; 
     std::vector<double> calibrationNm{};
     std::vector<double> calibrationCoeff{};
+
     while (!in.atEnd())
     {
-        QString line{ in.readLine() };
-        QStringList splited{ line.split(",") };
-        double nm{ splited.at(0).toDouble() };
-        double coeff{ splited.at(1).toDouble() };
-        calibrationNm.push_back(nm);
-        calibrationCoeff.push_back(coeff);
+        QString line = in.readLine().trimmed();
+        if (line.isEmpty())
+            continue;
 
+       
+        if (line.startsWith("#"))
+        {
+            if (line.contains("IntegrationTime_us:"))
+            {
+                int colonIdx = line.indexOf(":");
+                if (colonIdx != -1)
+                {
+                    QString valueStr = line.mid(colonIdx + 1).trimmed();
+                    bool ok = false;
+                    calibrationIntegrationTime = valueStr.toULong(&ok);
+                    if (!ok)
+                    {
+                        calibrationIntegrationTime = 0;
+                    }
+                }
+            }
+            continue; 
+        }
+
+        
+        if (line.contains("nm") || line.contains("Coefficient"))
+            continue;
+
+        
+        QStringList splited = line.split(",");
+        if (splited.size() >= 2) 
+        {
+            bool okNm = false, okCoeff = false;
+            double nm = splited.at(0).toDouble(&okNm);
+            double coeff = splited.at(1).toDouble(&okCoeff);
+
+            if (okNm && okCoeff)
+            {
+                calibrationNm.push_back(nm);
+                calibrationCoeff.push_back(coeff);
+            }
+        }
     }
-    //auto calibration = std::pair(calibrationNm, calibrationCoeff);
+
+   
     m_spectrumProcessor->setCalibrationWavelengts(calibrationNm);
     m_spectrumProcessor->setCalibrationCoeff(calibrationCoeff);
+    //m_spectrumProcessor->setCalibrationIntegrationTime(calibrationIntegrationTime);
     
 
 }
