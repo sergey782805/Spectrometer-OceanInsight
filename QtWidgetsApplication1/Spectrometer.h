@@ -42,7 +42,7 @@ private:
 	std::vector<double> m_biasDarkSpectrum;
 	std::vector<double> m_calibDarkSpectrum;
 	std::vector<double> m_pureDarkSpectrum;
-	std::vector<double> m_darkSpectrum; // pure dark
+	std::vector<double> m_darkSpectrum; //corrected final dark spectrum
 	std::vector<double> m_correctedSpectrum;
 	std::vector<long> m_deviceIds;
 	unsigned long m_integrationTimeMicroseconds;
