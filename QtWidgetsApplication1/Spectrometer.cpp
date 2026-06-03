@@ -84,12 +84,23 @@ unsigned long Spectrometer::detectIntegrationTime()
 	const unsigned long maxTime{ getMaxIntegrationTime() };
 	const unsigned long currIntegrationTime{ getIntegrationTime() };
 	const double spectrumMaxIntensity{ *std::max_element(m_correctedSpectrum.begin(), m_correctedSpectrum.end()) };
+	constexpr double saturationThreshold{ 65535.0 * 0.98 };
 	constexpr double targetMaxIntensity{ 65535.0 * 0.9 };
 	constexpr double targetMinIntensity{ targetMaxIntensity * 0.95 };
 	constexpr double targetAverage{ (targetMaxIntensity + targetMinIntensity) / 2.0 };
 
 	unsigned long newIntegrationTime{ currIntegrationTime };
-	if (spectrumMaxIntensity > targetMaxIntensity || spectrumMaxIntensity < targetMinIntensity)
+	if (spectrumMaxIntensity >= saturationThreshold)
+	{
+		newIntegrationTime = currIntegrationTime / 4;
+
+		if (newIntegrationTime < minTime)
+		{
+			newIntegrationTime = minTime;
+		}
+
+	}
+	else if (spectrumMaxIntensity > targetMaxIntensity || spectrumMaxIntensity < targetMinIntensity)
 	{
 		newIntegrationTime = static_cast<unsigned long>(currIntegrationTime * (targetAverage / spectrumMaxIntensity));
 	}

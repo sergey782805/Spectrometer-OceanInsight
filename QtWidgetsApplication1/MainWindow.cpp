@@ -134,8 +134,8 @@ void MainWindow::readCorrectedSpectrum()
 }
 void MainWindow::integrationTimeAutoSelect()
 {
-    if(!m_spectrometer->isReady())
-        return
+    if (!m_spectrometer->isReady())
+        return;
 
     ui.integrationTimeValue->setReadOnly(true);
     ui.averageValue->setReadOnly(true);
