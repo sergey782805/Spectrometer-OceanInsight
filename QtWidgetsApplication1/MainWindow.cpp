@@ -193,7 +193,7 @@ void MainWindow::integrationTimeAutoSelect()
             
             m_spectrometer->setAverageFactor(neededAverage);
 
-            
+           
             QMetaObject::invokeMethod(this, [this]() {
                 changeIntegrationTime();
                 }, Qt::QueuedConnection);
@@ -339,6 +339,8 @@ void MainWindow::saveAsRelative()
     auto relativeSpectrum{ m_spectrumProcessor->toRelative(spectrum) };
     std::size_t s{ nm.size() };
     QTextStream out(&savedFile);// out FROM programm
+    out << "#IntegrationTime_us: " << ui.integrationTimeValue->value() << "\n";
+    out << "#averageFactor: " << ui.averageValue->value() << "\n";
     out << "nm,intensity\n";
     for (std::size_t i{ 0 }; i < s; ++i)
     {
