@@ -1,4 +1,0 @@
-﻿Строка кода в Spectr.cpp 
-ui.quickWidget->setSource(QUrl::fromLocalFile("Graph.qml")) 
-
-Отключена, так как окно перестает отображаться без данных для построения графика.
